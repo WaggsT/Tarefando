@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Grupo — Tarefando</title>
+  <meta name="description" content="Detalhes do grupo de estudos no Tarefando.">
+
+  <!-- CSS canônico (absoluto) -->
+  <link rel="stylesheet" href="/codigo/public/style.css?v=1">
+
+  <!-- Estilos pontuais desta página (somente o essencial) -->
+  <style>
+    .hero-cover{
+      width:100%; aspect-ratio:16/6; min-height:220px;
+      background:#eee center/cover no-repeat; border:1px solid var(--line);
+      border-radius:var(--radius); box-shadow:var(--shadow);
+    }
+    .group-header{ display:grid; grid-template-columns:1fr auto; gap:1rem; align-items:end; margin-top:1rem }
+    .meta{ display:flex; gap:1rem; flex-wrap:wrap; color:var(--muted) }
+    .meta span{ display:inline-flex; align-items:center; gap:.4rem }
+    .meta svg{ width:16px; height:16px; opacity:.9 }
+    .content{ display:grid; grid-template-columns: 2fr 1fr; gap: var(--gap); margin-top:1rem }
+    .aside .card{ position:sticky; top:84px }
+    .related h3{ margin:.25rem 0 .75rem }
+    @media (max-width: 980px){
+      .content{ grid-template-columns: 1fr }
+      .aside .card{ position:static }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER idêntico ao da home (links absolutos) -->
+  <header>
+    <div class="container nav" style="display:flex;align-items:center;justify-content:space-between;gap:1rem;">
+      <!-- Marca -->
+      <a id="brandLink" href="/codigo/public/index.html#home" class="brand" aria-label="Página inicial Tarefando">
+        <span class="brand-badge" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M6 4h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H9l-3 2V4z" stroke="white" stroke-opacity=".9" stroke-width="1.5"/>
+            <path d="M9 8h6M9 12h6M9 16h4" stroke="white" stroke-opacity=".9" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <span>Tarefando</span>
+      </a>
+
+      <!-- Menu padronizado (todos absolutos) -->
+      <nav class="menu" aria-label="menu principal" style="flex:1;justify-content:center;">
+        <a class="btn" href="/codigo/public/index.html#home">Home</a>
+        <a class="btn" href="/codigo/public/Faculdades-Maria-Eduarda/faculdades.html">Faculdades</a>
+        <a class="btn" href="/codigo/public/Cadernos-Isabelle/cadernos.html">Cadernos</a>
+        <a class="btn" href="/codigo/public/Disciplinas-Divan/disciplinas.html">Disciplinas</a>
+        <a class="btn" href="/codigo/public/Grupo-Wagner/grupos.html">Grupos</a>
+        <a class="btn" href="/codigo/public/assinaturas.html">Assinaturas</a>
+        <a class="btn" href="/codigo/public/faq.html">FAQ</a>
+      </nav>
+
+      <!-- Conta -->
+      <div class="account" style="margin-left:auto;">
+        <button id="accountBtn" class="btn btn--round" aria-haspopup="menu" aria-expanded="false" aria-controls="accountMenu">
+          <span class="sr-only">Abrir menu da conta</span>
+          <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="2" />
+            <path d="M4 20c0-4 4-6 8-6s8 2 8 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+        <div id="accountMenu" class="menu-popover" role="menu">
+          <a role="menuitem" class="menu-item" href="#entrar">Entrar</a>
+          <a role="menuitem" class="menu-item highlight" href="#cadastro">Cadastrar</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- BREADCRUMB + título -->
+    <section class="hero" style="padding:36px 0 8px">
+      <div class="container">
+        <p class="section-desc" id="crumb" style="margin:0 0 .5rem">
+          <a href="/codigo/public/Grupo-Wagner/grupos.html">← Voltar para Grupos</a>
+        </p>
+
+        <div id="cover" class="hero-cover" aria-label="Capa do grupo"></div>
+
+        <div class="group-header">
+          <div>
+            <h1 id="title" style="margin:.8rem 0 .2rem">Carregando…</h1>
+            <div id="meta" class="meta"><!-- preenchido via JS --></div>
+            <div id="tags" class="group-tags" style="margin-top:.5rem"></div>
+          </div>
+          <div class="group-actions" id="actions"><!-- preenchido via JS --></div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container content">
+        <article class="card">
+          <h2 style="margin:.25rem 0 .5rem">Descrição</h2>
+          <p id="desc" class="group-desc">—</p>
+
+          <div class="section-head" style="margin-top:1.25rem">
+            <h2>Atividades recentes</h2>
+            <span class="section-desc">Mock (em breve)</span>
+          </div>
+
+          <div class="grid grid-2">
+            <div class="card"><strong>Lista 4 de Cálculo</strong><p class="section-desc">Entrega dia 12/11</p></div>
+            <div class="card"><strong>Mapa mental — Integrais</strong><p class="section-desc">Atualizado por Ana</p></div>
+          </div>
+        </article>
+
+        <aside class="aside">
+          <div class="card">
+            <h3 style="margin:.25rem 0 .6rem">Ações</h3>
+            <div id="asideActions" class="group-actions" style="margin:0 0 .5rem"></div>
+            <p class="section-desc">Ao participar, este grupo aparece em <em>Meus grupos</em>.</p>
+          </div>
+
+          <div class="card related" style="margin-top:1rem">
+            <h3>Relacionados</h3>
+            <div class="grid" id="related" style="grid-template-columns:1fr; gap:.75rem"></div>
+          </div>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <footer id="contato">
+    <div class="container footer-content">
+      <div><strong>Tarefando</strong><p class="section-desc">Cadernos e estudos compartilhados.</p></div>
+      <div><p><a href="/codigo/public/index.html#planos">Preços e planos</a></p><p><a href="#">Termos</a> · <a href="#">Privacidade</a></p></div>
+      <div><p>Contato: <a href="mailto:contato@tarefando.app">contato@tarefando.app</a></p><p>© <span id="y"></span> Tarefando</p></div>
+    </div>
+  </footer>
+
+  <!-- JS comum (ano do rodapé + popover da conta) -->
+  <script src="/codigo/public/index.js" defer></script>
+  <!-- Data helper: tenta API e cai para localStorage -->
+  <script src="/codigo/public/assets/js/grupos-data.js" defer></script>
+  <!-- JS desta página (DETALHE do grupo) -->
+  <script src="/codigo/public/assets/js/grupo-page.js" defer></script>
+</body>
+</html>

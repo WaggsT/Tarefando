@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tarefando — FAQ e Suporte</title>
+  <meta name="description" content="Perguntas frequentes, mural de recomendações e contato com o time do Tarefando.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/codigo/public/style.css?v=1">
+</head>
+<body>
+  <!-- Acessibilidade: pular navegação -->
+  <a class="sr-only" href="#conteudo-principal">Pular para o conteúdo principal</a>
+
+  <!-- HEADER (igual ao index) -->
+  <header>
+    <div class="container nav" style="display:flex;align-items:center;justify-content:space-between;gap:1rem;">
+      <a id="brandLink" href="/codigo/public/index.html#home" class="brand" aria-label="Página inicial Tarefando">
+        <span class="brand-badge" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M6 4h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H9l-3 2V4z" stroke="white" stroke-opacity=".9" stroke-width="1.5"/>
+            <path d="M9 8h6M9 12h6M9 16h4" stroke="white" stroke-opacity=".9" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <span>Tarefando</span>
+      </a>
+
+      <nav class="menu" aria-label="menu principal" style="flex:1;justify-content:center;">
+        <a class="btn" href="/codigo/public/index.html#home">Home</a>
+        <a class="btn" href="/codigo/public/Faculdades-Maria-Eduarda/faculdades.html">Faculdades</a>
+        <a class="btn" href="/codigo/public/Cadernos-Isabelle/cadernos.html">Cadernos</a>
+        <a class="btn" href="/codigo/public/Disciplinas-Divan/disciplinas.html">Disciplinas</a>
+        <a class="btn" href="/codigo/public/Grupo-Wagner/grupos.html">Grupos</a>
+        <a class="btn" href="/codigo/public/assinaturas.html">Assinaturas</a>
+        <a class="btn" href="/codigo/public/faq.html" aria-current="page">FAQ</a>
+      </nav>
+
+      <div class="account" style="margin-left:auto;">
+        <button id="accountBtn" class="btn btn--round" aria-haspopup="menu" aria-expanded="false" aria-controls="accountMenu">
+          <span class="sr-only">Abrir menu da conta</span>
+          <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="2" />
+            <path d="M4 20c0-4 4-6 8-6s8 2 8 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+        <div id="accountMenu" class="menu-popover" role="menu">
+          <a role="menuitem" class="menu-item" href="#entrar">Entrar</a>
+          <a role="menuitem" class="menu-item highlight" href="#cadastro">Cadastrar</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main id="conteudo-principal">
+    <!-- HERO PEQUENO -->
+    <section class="hero hero--small">
+      <div class="container">
+        <h1>FAQ, Mural e Contato</h1>
+        <p class="section-desc">
+          Tire dúvidas rápidas, veja o que outros estudantes falam do Tarefando e fale direto com o nosso time.
+        </p>
+      </div>
+    </section>
+
+    <!-- 1) PERGUNTAS FREQUENTES -->
+    <section id="faq-lista">
+      <div class="container">
+        <div class="section-head">
+          <h2>Perguntas frequentes</h2>
+          <p class="section-desc">Clique para ver a resposta.</p>
+        </div>
+
+        <div id="faqItems" class="faq-list">
+          <!-- Itens gerados via JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- 2) MURAL DE ELOGIOS / RECOMENDAÇÕES (CRUD) -->
+    <section id="mural">
+      <div class="container">
+        <div class="section-head">
+          <h2>Mural de recomendações</h2>
+          <p class="section-desc">
+            Comentários de estudantes que já usam o Tarefando. Você também pode deixar o seu.
+          </p>
+        </div>
+
+        <div id="muralList" class="mural-list">
+          <!-- Comentários renderizados via JS -->
+        </div>
+
+        <div class="mural-actions">
+          <button id="btnAddComentario" class="btn btn--primary">
+            Deixar meu comentário
+          </button>
+        </div>
+
+        <!-- Formulário de comentário (Create/Update) -->
+        <form id="muralForm" class="card mural-form is-hidden">
+          <h3 id="muralFormTitle">Novo comentário</h3>
+
+          <input type="hidden" id="comentarioId">
+
+          <div class="field">
+            <label for="nomeComentario">Nome</label>
+            <input type="text" id="nomeComentario" required placeholder="Seu nome ou apelido">
+          </div>
+
+          <div class="field">
+            <label for="vinculoComentario">Curso / vínculo</label>
+            <input type="text" id="vinculoComentario" placeholder="Ex.: Sistemas de Informação - 3º período">
+          </div>
+
+          <div class="field">
+            <label for="textoComentario">Comentário</label>
+            <textarea id="textoComentario" required
+              placeholder="Como o Tarefando ajudou nos seus estudos?"></textarea>
+          </div>
+
+          <div class="mural-form-actions">
+            <button type="submit" class="btn btn--primary">Salvar</button>
+            <button type="button" id="btnCancelarComentario" class="btn btn--ghost">
+              Cancelar
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- 3) CONTATE-NOS -->
+    <section id="contato-section">
+      <div class="container">
+        <div class="section-head">
+          <h2>Contate-nos</h2>
+          <p class="section-desc">
+            Preencha o formulário abaixo e retornaremos assim que possível.
+          </p>
+        </div>
+
+        <form id="contatoForm" class="card contato-form">
+          <div class="grid grid-2">
+            <div class="field">
+              <label for="contatoNome">Nome</label>
+              <input type="text" id="contatoNome" required placeholder="Seu nome completo">
+            </div>
+
+            <div class="field">
+              <label for="contatoEmail">E-mail</label>
+              <input type="email" id="contatoEmail" required placeholder="voce@exemplo.com">
+            </div>
+          </div>
+
+          <div class="grid grid-2">
+            <div class="field">
+              <label for="contatoCategoria">Categoria</label>
+              <select id="contatoCategoria" required>
+                <option value="">Selecione...</option>
+                <option value="suporte">Suporte técnico</option>
+                <option value="financeiro">Financeiro / Assinaturas</option>
+                <option value="sugestoes">Sugestões de melhoria</option>
+                <option value="parcerias">Parcerias acadêmicas</option>
+                <option value="outros">Outros assuntos</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="contatoAssunto">Assunto</label>
+              <input type="text" id="contatoAssunto" placeholder="Resumo rápido da sua mensagem">
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="contatoMensagem">Mensagem</label>
+            <textarea id="contatoMensagem" rows="4" required
+              placeholder="Descreva sua dúvida, problema ou sugestão com detalhes."></textarea>
+          </div>
+
+          <button type="submit" class="btn btn--primary">
+            Enviar mensagem
+          </button>
+
+          <p class="section-desc" style="margin-top:.75rem;font-size:.85rem;">
+            * Este envio é apenas demonstrativo para o projeto. Nenhum dado real é enviado.
+          </p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER (igual ao index) -->
+  <footer id="contato">
+    <div class="container footer-content">
+      <div>
+        <strong>Tarefando</strong>
+        <p class="section-desc">Cadernos e estudos compartilhados.</p>
+      </div>
+      <div>
+        <p><a href="#planos">Preços e planos</a></p>
+        <p><a href="#">Termos</a> · <a href="#">Privacidade</a></p>
+      </div>
+      <div>
+        <p>Contato: <a href="mailto:contato@tarefando.app">contato@tarefando.app</a></p>
+        <p>© <span id="y"></span> Tarefando</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- JS da página FAQ -->
+  <script src="/codigo/public/assets/js/faq-page.js" defer></script>
+</body>
+</html>

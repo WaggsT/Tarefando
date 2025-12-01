@@ -1,0 +1,36 @@
+{
+    "id": "92fd",
+    "name": "calculo 1",
+    "descricao": "aula legal",
+    "professor": "jubileu",
+    "faculdade_id": 1
+  },
+  {
+    "name": "ATP",
+    "descricao": "Aula de algoritmos e tÃ©cnicas de programaÃ§Ã£o utilizando linguagem Csharp",
+    "professor": "cristiano",
+    "faculdade_id": 5,
+    "id": "e845"
+  },
+  {
+    "name": "calculo 1",
+    "descricao": "aula legal",
+    "professor": "jubileu",
+    "faculdade_id": 5,
+    "id": "1da4"
+  },
+  {
+    "id": "126a",
+    "name": "Desenvolvimento web",
+    "descricao": "Aula de desenvolvimento web (front-end)",
+    "professor": "Obi-Wan Kenobi",
+    "faculdade_id": 4
+  },
+  {
+    "name": "mecÃ¢nica",
+    "descricao": "Aula prÃ¡tica do curso de engenharia mecÃ¢nica",
+    "professor": "Jailson mendes",
+    "faculdade_id": 3,
+    "id": "77fd"
+  }
+]

@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tarefando — Compartilhamento Acadêmico</title>
+  <meta name="description" content="Tarefando: rede social acadêmica para centralizar anotações, provas antigas, atividades e monitorias.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- CSS canônico (absoluto para funcionar em qualquer subpasta) -->
+  <link rel="stylesheet" href="/codigo/public/style.css?v=1">
+</head>
+<body>
+  <!-- Acessibilidade: pular navegação -->
+  <a class="sr-only" href="#home">Pular para o conteúdo principal</a>
+
+  <!-- HEADER (único; removi o bloco duplicado que quebrava o layout) -->
+  <header>
+    <div class="container nav" style="display:flex;align-items:center;justify-content:space-between;gap:1rem;">
+      <!-- Marca (link absoluto p/ home) -->
+      <a id="brandLink" href="/codigo/public/index.html#home" class="brand" aria-label="Página inicial Tarefando">
+        <span class="brand-badge" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M6 4h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H9l-3 2V4z" stroke="white" stroke-opacity=".9" stroke-width="1.5"/>
+            <path d="M9 8h6M9 12h6M9 16h4" stroke="white" stroke-opacity=".9" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <span>Tarefando</span>
+      </a>
+
+      <!-- Menu padronizado (todos absolutos) -->
+      <nav class="menu" aria-label="menu principal" style="flex:1;justify-content:center;">
+        <a class="btn" href="/codigo/public/index.html#home">Home</a>
+        <a class="btn" href="/codigo/public//Faculdades-Maria-Eduarda/faculdades.html">Faculdades</a>
+        <a class="btn" href="/codigo/public/Cadernos-Isabelle/cadernos.html">Cadernos</a>
+        <a class="btn" href="/codigo/public/Disciplinas-Divan/disciplinas.html">Disciplinas</a>
+        <a class="btn" href="/codigo/public/Grupo-Wagner/grupos.html">Grupos</a>
+        <a class="btn" href="/codigo/public/assinaturas.html">Assinaturas</a>
+        <a class="btn" href="/codigo/public/faq.html">FAQ</a>
+      </nav>
+
+      <!-- Conta -->
+      <div class="account" style="margin-left:auto;">
+        <button id="accountBtn" class="btn btn--round" aria-haspopup="menu" aria-expanded="false" aria-controls="accountMenu">
+          <span class="sr-only">Abrir menu da conta</span>
+          <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="2" />
+            <path d="M4 20c0-4 4-6 8-6s8 2 8 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+        <div id="accountMenu" class="menu-popover" role="menu">
+          <a role="menuitem" class="menu-item" href="#entrar">Entrar</a>
+          <a role="menuitem" class="menu-item highlight" href="#cadastro">Cadastrar</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main id="home">
+    <!-- HERO: vídeo + CTA -->
+    <section class="hero">
+      <div class="container" style="display:grid;gap:1rem;justify-items:center;text-align:center">
+        <div class="mock" style="width:100%;max-width:880px" aria-label="Vídeo apresentando a plataforma">
+          <div class="mock-inner">
+            <strong>Vídeo apresentando a plataforma</strong>
+          </div>
+        </div>
+        <div class="hero-cta">
+          <a class="btn btn--primary" href="#cadastro">Teste grátis</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ATALHOS PARA OS CRUDs -->
+    <section id="atalhos">
+      <div class="container">
+        <div class="section-head" style="justify-content:center;text-align:center">
+          <h2>Comece por onde precisar</h2>
+        </div>
+        <div class="grid grid-3">
+          <a class="card" href="/codigo/public/faculdades.html">
+            <div>
+              <h3>Faculdades</h3>
+              <p>Encontre cursos e turmas da sua instituição e centralize grupos e cadernos por faculdade. <em>(Duda)</em></p>
+            </div>
+          </a>
+          <a class="card" href="/codigo/public/Cadernos-Isabelle/cadernos.html">
+            <div>
+              <h3>Cadernos</h3>
+              <p>Publique e gerencie cadernos e anotações dos alunos com tags e versões. <em>(Isabelle)</em></p>
+            </div>
+          </a>
+          <a class="card" href="/codigo/public/Disciplinas-Divan/disciplinas.html">
+            <div>
+              <h3>Disciplinas</h3>
+              <p>Navegue por disciplinas para encontrar materiais e atividades rapidamente. <em>(Divan)</em></p>
+            </div>
+          </a>
+          <a class="card" href="/codigo/public/Grupo-Wagner/grupos.html">
+            <div>
+              <h3>Grupo de Estudos</h3>
+              <p>Crie/participe de grupos por matéria e interaja com sua turma. <em>(Wagner)</em></p>
+            </div>
+          </a>
+          <a class="card" href="/codigo/public/assinaturas.html">
+            <div>
+              <h3>Assinaturas</h3>
+              <p>Planos, gestão e ciclo de cobrança para quem deseja recursos extras. <em>(Pedro)</em></p>
+            </div>
+          </a>
+          <a class="card" href="/codigo/public/faq.html">
+            <div>
+              <h3>FAQ / Políticas</h3>
+              <p>Políticas de compartilhamento, responsabilidades e termos. <em>(Joao)</em></p>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- SOBRE A PLATAFORMA -->
+    <section id="sobre">
+      <div class="container">
+        <div class="section-head">
+          <h2>Sobre a plataforma</h2>
+          <p class="section-desc">Centralize cadernos, materiais e estudos — feito para colaborar sem fricção.</p>
+        </div>
+        <div class="grid grid-3">
+          <article class="card">
+            <div class="icon" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M4 6h16M4 10h16M4 14h10M4 18h6" stroke="#2F2A26" stroke-opacity=".85" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div>
+              <h3>Organização de conteúdo</h3>
+              <p>Arquivos, links e anotações com tags por disciplina, turma e curso — busca rápida e filtros inteligentes.</p>
+            </div>
+          </article>
+          <article class="card">
+            <div class="icon" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 3l9 5-9 5-9-5 9-5zm-9 9l9 5 9-5" stroke="#2F2A26" stroke-opacity=".85" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div>
+              <h3>Estudo colaborativo</h3>
+              <p>Crie ou entre em grupos, compartilhe referências e acompanhe o progresso da turma.</p>
+            </div>
+          </article>
+          <article class="card">
+            <div class="icon" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M7 3h10v3H7V3zm-2 6h14v12H5V9zm4 3h6" stroke="#2F2A26" stroke-opacity=".85" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div>
+              <h3>Prazos e agenda</h3>
+              <p>Provas, entregas e monitorias integradas ao calendário para você não perder nada.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA FINAL -->
+    <section id="cadastro">
+      <div class="container">
+        <div class="cta-final">
+          <h2>Comece a usar o Tarefando hoje</h2>
+          <p class="section-desc">Crie sua conta gratuitamente e experimente os recursos da plataforma.</p>
+          <div class="hero-cta" style="justify-content:center">
+            <a class="btn btn--primary" href="#">Cadastrar</a>
+            <a class="btn" href="#">Entrar</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer id="contato">
+    <div class="container footer-content">
+      <div>
+        <strong>Tarefando</strong>
+        <p class="section-desc">Cadernos e estudos compartilhados.</p>
+      </div>
+      <div>
+        <p><a href="#planos">Preços e planos</a></p>
+        <p><a href="#">Termos</a> · <a href="#">Privacidade</a></p>
+      </div>
+      <div>
+        <p>Contato: <a href="mailto:contato@tarefando.app">contato@tarefando.app</a></p>
+        <p>© <span id="y"></span> Tarefando</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- JS da home -->
+  <!-- ALTERAÇÃO: apontando para a pasta “assets/js”, que é a sua estrutura atual -->
+  <script src="/codigo/public/assets/js/home-page.js" defer></script>
+</body>
+</html>

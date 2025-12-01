@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cadernos e Materiais — Tarefando</title>
+  <meta name="description" content="Publique e encontre cadernos e anotações dos alunos.">
+  <link rel="stylesheet" href="/codigo/public/style.css?v=1">
+
+  <style>
+    .btn-excluir { background-color: #C04040; color: #fff; border: none; padding: 6px 12px; border-radius: 25px; font-size: .85rem; font-weight: 700; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,.2) }
+    .btn-excluir:hover { background:#A03030 }
+    .card-caderno{ display:flex; flex-direction:column; height:100% }
+    .card-caderno h3{ margin-top:0 }
+    .card-caderno .group-body{ flex:1; display:flex; flex-direction:column; gap:.6rem }
+    .caderno-tags{ margin-top:auto; padding-top:.5rem; border-top:1px solid var(--line) }
+    .card-header-actions{ display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; padding-top:0 }
+    .card-header-actions h3{ margin:0; flex-grow:1; padding-right:10px; line-height:1.2 }
+    .toolbar{ display:flex; gap:.5rem; flex-wrap:wrap; align-items:center }
+    .toolbar .spacer{ flex:1 }
+    .modal{ display:none; position:fixed; z-index:1000; left:0; top:0; width:100%; height:100%; overflow:auto; background:rgba(0,0,0,.5) }
+    .modal-content{ background:#fff; margin:10% auto; padding:30px; border-radius:18px; width:90%; max-width:500px; box-shadow:0 8px 16px rgba(0,0,0,.2); border:1px solid #ccc }
+    .close-btn{ color:#aaa; float:right; font-size:28px; font-weight:bold; cursor:pointer }
+    .close-btn:hover,.close-btn:focus{ color:#333; text-decoration:none }
+    label{ display:block; margin-top:15px; font-weight:700; color:#555; font-size:.95em }
+    input[type="text"], select, textarea{ width:100%; padding:10px; margin-top:5px; border:1px solid #ccc; border-radius:12px; box-sizing:border-box }
+    .actions{ margin-top:30px; display:flex; justify-content:flex-end; gap:10px }
+    .btn-cancelar{ background:#f0f0f0; color:#333; padding:10px 15px; border:1px solid #ccc; border-radius:999px; cursor:pointer }
+    .btn-salvar{ background:#D66D5B; color:#fff; padding:10px 15px; border:none; border-radius:999px; cursor:pointer }
+    .btn-salvar:hover{ background:#c45d4c }
+    .btn-novo-caderno{ background:#D66D5B; color:#fff; padding:10px 20px; border:none; border-radius:25px; cursor:pointer; font-size:16px; font-weight:700; box-shadow:0 4px 6px rgba(0,0,0,.15) }
+    .btn-novo-caderno:hover{ background:#c45d4c }
+    @media (max-width:1100px){ .grid-4{grid-template-columns:repeat(3,1fr)} }
+    @media (max-width:900px){ .grid-4{grid-template-columns:repeat(2,1fr)} }
+    @media (max-width:560px){ .grid-4{grid-template-columns:1fr} }
+  </style>
+</head>
+<body>
+  <!-- Modal Novo/Editar Caderno -->
+  <div id="novoCadernoModal" class="modal" aria-hidden="true">
+    <div class="modal-content">
+      <span class="close-btn" id="fecharModal" aria-label="Fechar">&times;</span>
+      <h2 id="modalTitle">Cadastrar Novo Caderno</h2>
+      <form id="formNovoCaderno">
+        <input type="hidden" id="editCadernoId">
+        <label for="nomeCaderno">Nome do Caderno</label>
+        <input type="text" id="nomeCaderno" name="nomeCaderno" required placeholder="Ex: Resumo de Algoritmos I - Aula 1 a 5" style="border:2px dotted #D66D5B">
+        <label for="disciplina">Disciplina</label>
+        <select id="disciplina" name="disciplina" required>
+          <option value="">Selecione a Disciplina</option>
+        </select>
+        <label for="descricao">Descrição (Opcional)</label>
+        <textarea id="descricao" name="descricao" rows="2" placeholder="Breve resumo sobre o conteúdo do caderno..."></textarea>
+        <label>Adicionar Arquivo (Inicial)</label>
+        <div class="file-upload-box" onclick="document.getElementById('uploadFile').click()" style="border:2px dashed #D66D5B;background:#fff9f8;padding:20px;text-align:center;margin-top:10px;cursor:pointer;border-radius:4px">
+          <p>Clique ou arraste para enviar um arquivo inicial.</p>
+          <input type="file" id="uploadFile" name="uploadFile" style="display:none">
+        </div>
+        <div class="actions">
+          <button type="button" class="btn-cancelar" id="btnCancelar">Cancelar</button>
+          <button type="submit" class="btn-salvar">Cadastrar e Continuar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Header padrão -->
+  <header>
+    <div class="container nav" style="display:flex;align-items:center;justify-content:space-between;gap:1rem;">
+      <a id="brandLink" href="/codigo/public/index.html#home" class="brand" aria-label="Página inicial Tarefando">
+        <span class="brand-badge" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M6 4h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H9l-3 2V4z" stroke="white" stroke-opacity=".9" stroke-width="1.5"/>
+            <path d="M9 8h6M9 12h6M9 16h4" stroke="white" stroke-opacity=".9" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <span>Tarefando</span>
+      </a>
+      <nav class="menu" aria-label="menu principal" style="flex:1;justify-content:center;">
+        <a class="btn" href="/codigo/public/index.html#home">Home</a>
+        <a class="btn" href="/codigo/public//Faculdades-Maria-Eduarda/faculdades.html">Faculdades</a>
+        <a class="btn" href="/codigo/public/Cadernos-Isabelle/cadernos.html" aria-current="page">Cadernos</a>
+        <a class="btn" href="/codigo/public/Disciplinas-Divan/disciplinas.html">Disciplinas</a>
+        <a class="btn" href="/codigo/public/Grupo-Wagner/grupos.html">Grupos</a>
+        <a class="btn" href="/codigo/public/assinaturas.html">Assinaturas</a>
+        <a class="btn" href="/codigo/public/faq.html">FAQ</a>
+      </nav>
+      <div class="account" style="margin-left:auto;">
+        <button id="accountBtn" class="btn btn--round" aria-haspopup="menu" aria-expanded="false" aria-controls="accountMenu">
+          <span class="sr-only">Abrir menu da conta</span>
+          <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="2" />
+            <path d="M4 20c0-4 4-6 8-6s8 2 8 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+        <div id="accountMenu" class="menu-popover" role="menu">
+          <a role="menuitem" class="menu-item" href="#entrar">Entrar</a>
+          <a role="menuitem" class="menu-item highlight" href="#cadastro">Cadastrar</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" style="padding:40px 0 18px">
+      <div class="container">
+        <h1 style="margin:0 0 .4rem">Cadernos e Anotações</h1>
+        <p class="section-desc" style="margin:0 0 1rem">Encontre materiais de estudo compartilhados por outros alunos.</p>
+        <div class="toolbar card" style="padding:.7rem">
+          <input id="q" type="search" placeholder="Buscar cadernos..." aria-label="Pesquisar" style="flex:1;min-width:220px;padding:.65rem .85rem;border-radius:12px;border:1px solid var(--line);background:#fff8;color:var(--ink)">
+          <div class="spacer"></div>
+          <button id="btnAbrirModal" class="btn-novo-caderno" type="button">Novo Caderno</button>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <div class="section-head"><h2>Cadernos Recentes</h2></div>
+        <div id="cadernosGrid" class="grid grid-4" aria-live="polite"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer id="contato">
+    <div class="container footer-content">
+      <div>
+        <strong>Tarefando</strong>
+        <p class="section-desc">Cadernos e estudos compartilhados.</p>
+      </div>
+      <div>
+        <p><a href="/codigo/public/index.html#planos">Preços e planos</a></p>
+        <p><a href="#">Termos</a> · <a href="#">Privacidade</a></p>
+      </div>
+      <div>
+        <p>Contato: <a href="mailto:contato@tarefando.app">contato@tarefando.app</a></p>
+        <p>© <span id="y"></span> Tarefando</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/codigo/public/index.js" defer></script>
+  <script src="/codigo/public/assets/js/cadernos-page.js" defer></script>
+</body>
+</html>

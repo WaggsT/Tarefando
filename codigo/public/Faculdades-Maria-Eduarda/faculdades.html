@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Faculdades — Tarefando</title>
+  <meta name="description" content="Encontre e cadastre faculdades.">
+
+  <!-- CSS canônico do projeto (absoluto) -->
+  <link rel="stylesheet" href="/codigo/public/style.css?v=1">
+
+  <!-- Estilos pontuais da página (somente o necessário para o carrossel e form) -->
+  <style>
+    .carousel-container { position: relative; }
+    .carousel-wrapper {
+      display: flex; overflow-x: auto; gap: var(--gap, 1.25rem);
+      padding: 0.5rem 0.25rem 1.5rem 0.25rem;
+      -webkit-overflow-scrolling: touch; scrollbar-width: none; scroll-behavior: smooth;
+    }
+    .carousel-wrapper::-webkit-scrollbar { display: none; }
+    .carousel-wrapper .card { flex: 0 0 320px; max-width: 320px; display: flex; flex-direction: column; }
+    .carousel-wrapper .card .group-body { flex-grow: 1; display: flex; flex-direction: column; }
+
+    .carousel-btn {
+      position: absolute; top: 45%; transform: translateY(-50%);
+      z-index: 10; width: 44px; height: 44px;
+      background: var(--panel, #FFF9F2); box-shadow: var(--shadow, 0 10px 30px rgba(76,55,40,.12));
+      opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s;
+    }
+    .carousel-container:hover .carousel-btn { opacity: 1; pointer-events: auto; }
+    .carousel-btn:hover { transform: translateY(-50%) scale(1.1); }
+    .carousel-btn--left { left: .75rem; }
+    .carousel-btn--right { right: .75rem; }
+
+    .carousel-btn::before {
+      font-family: monospace; font-weight: bold; font-size: 2.2rem; color: var(--ink); line-height: 1;
+      content: '';
+    }
+    .carousel-btn--left::before { content: '‹'; padding-right: 3px; }
+    .carousel-btn--right::before { content: '›'; padding-left: 3px; }
+
+    .field { display: flex; flex-direction: column; gap: .35rem; }
+    .field label { font-weight: 600; font-size: .9rem; color: var(--muted); }
+    .field input { padding: .7rem .9rem; border-radius: var(--radius, 18px); border: 1px solid var(--line); background: #fff8; color: var(--ink); }
+
+    .btn--action { padding: .4rem .6rem; font-size: .85rem; border-color: transparent; }
+    .btn--delete { color: var(--brand); }
+    .btn--delete:hover { background: rgba(179,76,72,.1); }
+    .btn--edit { color: var(--muted); }
+    .btn--edit:hover { background: rgba(0,0,0,.05); }
+    .group-actions { flex-wrap: wrap; }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER padrão -->
+  <header>
+    <div class="container nav" style="display:flex;align-items:center;justify-content:space-between;gap:1rem;">
+      <a href="/codigo/public/index.html#home" class="brand" aria-label="Página inicial Tarefando">
+        <span class="brand-badge" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M6 4h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H9l-3 2V4z" stroke="white" stroke-opacity=".9" stroke-width="1.5"/>
+            <path d="M9 8h6M9 12h6M9 16h4" stroke="white" stroke-opacity=".9" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <span>Tarefando</span>
+      </a>
+
+      <nav class="menu" aria-label="menu principal" style="flex:1;justify-content:center;">
+        <a class="btn" href="/codigo/public/index.html#home">Home</a>
+        <a class="btn" href="/codigo/public/faculdades.html" aria-current="page">Faculdades</a>
+        <a class="btn" href="/codigo/public/Cadernos-Isabelle/cadernos.html">Cadernos</a>
+        <a class="btn" href="/codigo/public/Disciplinas-Divan/disciplinas.html">Disciplinas</a>
+        <a class="btn" href="/codigo/public/Grupo-Wagner/grupos.html">Grupos</a>
+        <a class="btn" href="/codigo/public/assinaturas.html">Assinaturas</a>
+      </nav>
+
+      <div class="account" style="margin-left:auto;">
+        <button id="accountBtn" class="btn btn--round" aria-haspopup="menu" aria-expanded="false" aria-controls="accountMenu">
+          <span class="sr-only">Abrir menu da conta</span>
+          <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="2" />
+            <path d="M4 20c0-4 4-6 8-6s8 2 8 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+        <div id="accountMenu" class="menu-popover" role="menu">
+          <a role="menuitem" class="menu-item" href="#entrar">Entrar</a>
+          <a role="menuitem" class="menu-item highlight" href="#cadastro">Cadastrar</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Lista / carrossel -->
+    <section style="padding-top:60px;padding-bottom:30px;">
+      <div class="container">
+        <div class="section-head"><h2>Faculdades Disponíveis</h2></div>
+
+        <div class="carousel-container">
+          <div id="carouselGrid" class="carousel-wrapper"></div>
+          <button id="scrollLeftBtn" aria-label="Rolar para esquerda" class="btn btn--round carousel-btn carousel-btn--left"></button>
+          <button id="scrollRightBtn" aria-label="Rolar para direita" class="btn btn--round carousel-btn carousel-btn--right"></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA + Form -->
+    <section id="cadastro" style="padding-top:30px;padding-bottom:30px;">
+      <div class="container">
+        <div id="cta-card" class="cta-final" style="padding:1.5rem 2rem; text-align:left; display:flex; justify-content:space-between; align-items:center; gap:1rem; flex-wrap:wrap;">
+          <div>
+            <h3 style="margin:0 0 .25rem">Não encontrou sua faculdade?</h3>
+            <p class="section-desc" style="margin:0;">Ajude a comunidade cadastrando uma nova.</p>
+          </div>
+          <button id="openCreate" class="cta" type="button">+ Cadastrar faculdade</button>
+        </div>
+
+        <div id="formCard" class="card" style="display:none; margin-top:1.25rem;">
+          <div class="drawer-head">
+            <h3 id="formTitle" style="margin:0">Cadastrar nova faculdade</h3>
+            <button class="close" type="button" aria-label="Fechar" id="closeForm">×</button>
+          </div>
+
+          <form id="facultyForm" style="display:grid; gap:.75rem; margin-top:1rem;">
+            <input type="hidden" id="facul_id">
+            <div class="field"><label for="facul_nome">Nome da faculdade</label><input id="facul_nome" required></div>
+            <div class="field"><label for="facul_campus">Campus</label><input id="facul_campus" placeholder="Ex: Coração Eucarístico, Pampulha"></div>
+            <div class="field"><label for="facul_endereco">Endereço</label><input id="facul_endereco"></div>
+            <div class="field"><label for="facul_capa">URL da foto (capa)</label><input id="facul_capa" placeholder="https://..."></div>
+
+            <div class="hero-cta" style="margin-top:.6rem;justify-content:flex-end">
+              <button class="btn" type="button" id="cancelForm">Cancelar</button>
+              <button id="submitFormBtn" class="cta" type="submit">Cadastrar e Selecionar</button>
+            </div>
+            <p id="formStatus" class="section-desc" style="margin:.5rem 0 0"></p>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- Minha faculdade -->
+    <section style="padding-top:30px;padding-bottom:60px;">
+      <div class="container">
+        <div class="section-head"><h2>Minha Faculdade</h2></div>
+        <div id="myFacultyBox"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer id="contato">
+    <div class="container footer-content">
+      <div><strong>Tarefando</strong><p class="section-desc">Cadernos e estudos compartilhados.</p></div>
+      <div><p><a href="/codigo/public/index.html#planos">Preços e planos</a></p><p><a href="#">Termos</a> · <a href="#">Privacidade</a></p></div>
+      <div><p>Contato: <a href="mailto:contato@tarefando.app">contato@tarefando.app</a></p><p>© <span id="y"></span> Tarefando</p></div>
+    </div>
+  </footer>
+
+  <!-- JS separado desta página -->
+  <script src="/codigo/public/assets/js/faculdades-page.js" defer></script>
+</body>
+</html>

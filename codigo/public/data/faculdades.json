@@ -1,0 +1,50 @@
+[
+  {
+    "id": 1,
+    "name": "Universidade de Eletria",
+    "endereco": "Av. dos Circuitos, 1010 - Vale do Silício, BR",
+    "capa": "https://picsum.photos/seed/eletria/640/360",
+    "cursos": 45,
+    "alunos": 22000
+  },
+  {
+    "id": 2,
+    "name": "Centro de Artes Solares",
+    "endereco": "Rua da Aurora, 7 - Bairro das Cores, BR",
+    "capa": "https://picsum.photos/seed/solares/640/360",
+    "cursos": 20,
+    "alunos": 8000
+  },
+  {
+    "id": 3,
+    "name": "Instituto de Biotecnologia",
+    "endereco": "Av. das Marés, 300 - Cidade Oceânica, BR",
+    "capa": "https://picsum.photos/seed/aquatica/640/360",
+    "cursos": 15,
+    "alunos": 5000
+  },
+  {
+    "id": 4,
+    "name": "Faculdade Aeroespacial",
+    "endereco": "Rodovia da Decolagem, km 5 - Campos de Marte, BR",
+    "capa": "https://picsum.photos/seed/aero/640/360",
+    "cursos": 10,
+    "alunos": 3500
+  },
+  {
+    "id": 5,
+    "name": "Academia Culinária Molecular",
+    "endereco": "Praça do Sabor, 50 - Vila Gourmet, BR",
+    "capa": "https://picsum.photos/seed/culinaria/640/360",
+    "cursos": 8,
+    "alunos": 1200
+  },
+  {
+    "id": 6,
+    "name": "Instituto de História Antiga",
+    "endereco": "Alameda das Relíquias, 1500 a.C., BR",
+    "capa": "https://picsum.photos/seed/historia/640/360",
+    "cursos": 12,
+    "alunos": 2500
+  }
+]

@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Detalhes do Material - Tarefando</title>
+  <link rel="stylesheet" href="/codigo/public/style.css?v=1">
+
+  <style>
+    #material-titulo{ font-size:2.2rem; font-weight:700; margin-bottom:.5rem; color:var(--ink) }
+    .info-bar{ display:flex; flex-wrap:wrap; align-items:center; gap:1rem; margin-bottom:1.5rem; font-size:.9rem; color:var(--muted) }
+    .info-bar .tag{ background:#f0f0f0; padding:.25rem .75rem; border-radius:15px; font-weight:500; color:var(--ink) }
+    .action-buttons{ display:flex; gap:1rem; margin-bottom:2rem }
+    .material-viewer{ width:100%; min-height:500px; border:1px solid var(--line); border-radius:12px; margin-bottom:2rem; overflow:hidden; display:flex; justify-content:center; align-items:center; background:var(--panel) }
+    .material-viewer p{ color:var(--muted); font-style:italic }
+    .material-viewer iframe{ width:100%; height:700px; border:none }
+    .material-text-content{ padding:2rem; width:100%; height:100%; white-space:pre-wrap; font-family:Georgia, serif; font-size:1.1rem; line-height:1.7; background:#fff }
+    .comments-section .comment{ border:1px solid var(--line); border-radius:6px; padding:1rem; margin-bottom:1rem; background:#fcfcfc }
+    .comments-section .comment-author{ font-weight:600; margin-bottom:.4rem }
+    .comments-section .comment-date{ color:var(--muted); font-size:.9rem; margin-bottom:.5rem }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container nav" style="display:flex;align-items:center;justify-content:space-between;gap:1rem;">
+      <a id="brandLink" href="/codigo/public/index.html#home" class="brand" aria-label="Página inicial Tarefando">
+        <span class="brand-badge" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M6 4h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H9l-3 2V4z" stroke="white" stroke-opacity=".9" stroke-width="1.5"/>
+            <path d="M9 8h6M9 12h6M9 16h4" stroke="white" stroke-opacity=".9" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <span>Tarefando</span>
+      </a>
+      <nav class="menu" aria-label="menu principal" style="flex:1;justify-content:center;">
+        <a class="btn" href="/codigo/public/index.html#home">Home</a>
+        <a class="btn" href="/codigo/public//Faculdades-Maria-Eduarda/faculdades.html">Faculdades</a>
+        <a class="btn" href="/codigo/public/Cadernos-Isabelle/cadernos.html">Cadernos</a>
+        <a class="btn" href="/codigo/public/Disciplinas-Divan/disciplinas.html">Disciplinas</a>
+        <a class="btn" href="/codigo/public/Grupo-Wagner/grupos.html">Grupos</a>
+        <a class="btn" href="/codigo/public/assinaturas.html">Assinaturas</a>
+        <a class="btn" href="/codigo/public/faq.html">FAQ</a>
+      </nav>
+      <div class="account" style="margin-left:auto;">
+        <button id="accountBtn" class="btn btn--round" aria-haspopup="menu" aria-expanded="false" aria-controls="accountMenu">
+          <span class="sr-only">Abrir menu da conta</span>
+          <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="2" />
+            <path d="M4 20c0-4 4-6 8-6s8 2 8 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+        <div id="accountMenu" class="menu-popover" role="menu">
+          <a role="menuitem" class="menu-item" href="#entrar">Entrar</a>
+          <a role="menuitem" class="menu-item highlight" href="#cadastro">Cadastrar</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" style="padding:24px 0 40px">
+    <h1 id="material-titulo">Carregando...</h1>
+    <div class="info-bar">
+      <span id="material-autor">—</span>
+      <span id="material-tag" class="tag"></span>
+    </div>
+
+    <div id="material-viewer" class="material-viewer"><p>Carregando visualização...</p></div>
+
+    <div class="action-buttons">
+      <a id="btn-download" class="btn cta" href="#" download>Baixar</a>
+      <button class="btn" type="button">Salvar</button>
+    </div>
+
+    <section class="description-section">
+      <h2>Descrição</h2>
+      <p id="material-descricao"></p>
+    </section>
+
+    <section class="comments-section">
+      <h2>Comentários</h2>
+      <div class="comment">
+        <div class="comment-author">Usuário #42</div>
+        <div class="comment-date">há 2 dias</div>
+        <div class="comment-text">Material muito bom, ajudou demais!</div>
+      </div>
+      <div class="comment">
+        <div class="comment-author">Usuário #7</div>
+        <div class="comment-date">há 1 semana</div>
+        <div class="comment-text">Faltou a parte de otimização, mas o resto está ótimo.</div>
+      </div>
+    </section>
+  </main>
+
+  <footer id="contato">
+    <div class="container footer-content">
+      <div>
+        <strong>Tarefando</strong>
+        <p class="section-desc">Cadernos e estudos compartilhados.</p>
+      </div>
+      <div>
+        <p><a href="/codigo/public/index.html#planos">Preços e planos</a></p>
+        <p><a href="#">Termos</a> · <a href="#">Privacidade</a></p>
+      </div>
+      <div>
+        <p>Contato: <a href="mailto:contato@tarefando.app">contato@tarefando.app</a></p>
+        <p>© <span id="y"></span> Tarefando</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/codigo/public/index.js" defer></script>
+  <script src="/codigo/public/assets/js/material-page.js" defer></script>
+</body>
+</html>

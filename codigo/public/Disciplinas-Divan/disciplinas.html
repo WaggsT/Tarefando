@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CRUD Disciplinas</title>
+
+  <!-- Bootstrap (ok) -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Tema global padronizado (ABSOLUTO p/ funcionar de qualquer pasta) -->
+  <!-- ALTERAÇÃO: mantém caminho absoluto /codigo/public -->
+  <link rel="stylesheet" href="/codigo/public/style.css?v=1">
+</head>
+
+<body>
+<header>
+  <div class="container nav" style="display:flex;align-items:center;justify-content:space-between;gap:1rem;">
+    <!-- Marca -->
+    <!-- ALTERAÇÃO: brand agora aponta para a home absoluta -->
+    <a id="brandLink" href="/codigo/public/index.html#home" class="brand" aria-label="Página inicial Tarefando">
+      <span class="brand-badge" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M6 4h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H9l-3 2V4z" stroke="white" stroke-opacity=".9" stroke-width="1.5"/>
+          <path d="M9 8h6M9 12h6M9 16h4" stroke="white" stroke-opacity=".9" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </span>
+      <span>Tarefando</span>
+    </a>
+
+      <!-- Menu padronizado (todos absolutos) -->
+      <nav class="menu" aria-label="menu principal" style="flex:1;justify-content:center;">
+        <a class="btn" href="/codigo/public/index.html#home">Home</a>
+        <a class="btn" href="/codigo/public//Faculdades-Maria-Eduarda/faculdades.html">Faculdades</a>
+        <a class="btn" href="/codigo/public/Cadernos-Isabelle/cadernos.html">Cadernos</a>
+        <a class="btn" href="/codigo/public/Disciplinas-Divan/disciplinas.html">Disciplinas</a>
+        <a class="btn" href="/codigo/public/Grupo-Wagner/grupos.html">Grupos</a>
+        <a class="btn" href="/codigo/public/assinaturas.html">Assinaturas</a>
+        <a class="btn" href="/codigo/public/faq.html">FAQ</a>
+      </nav>
+
+    <!-- Conta -->
+    <div class="account" style="margin-left:auto;">
+      <button id="accountBtn" class="btn btn--round" aria-haspopup="menu" aria-expanded="false" aria-controls="accountMenu">
+        <span class="sr-only">Abrir menu da conta</span>
+        <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="2" />
+          <path d="M4 20c0-4 4-6 8-6s8 2 8 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+      <div id="accountMenu" class="menu-popover" role="menu">
+        <a role="menuitem" class="menu-item" href="#entrar">Entrar</a>
+        <a role="menuitem" class="menu-item highlight" href="#cadastro">Cadastrar</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+  <div class="container mt-4">
+    <div class="cartao">
+      <form id="formulario-de-disciplinas">
+        <input type="hidden" id="disciplinas-id">
+
+        <div class="grupo-formulario mb-3">
+          <label for="nome" class="form-label">Disciplina:</label>
+          <input type="text" id="nome" name="nome" class="form-control" placeholder="Ex: Cálculo 1" required>
+        </div>
+
+        <div class="grupo-formulario mb-3">
+          <label for="descricao" class="form-label">Descrição:</label>
+          <input type="text" id="descricao" name="descricao" class="form-control" placeholder="Ex: Introdução ao cálculo diferencial" maxlength="200">
+        </div>
+
+        <div class="grupo-formulario mb-3">
+          <label for="professor" class="form-label">Professor:</label>
+          <input type="text" id="professor" name="professor" class="form-control" placeholder="Ex: Prof. João da Silva" maxlength="200">
+        </div>
+
+        <div class="grupo-formulario mb-3">
+          <label for="faculdade" class="form-label">Faculdade:</label>
+          <select id="faculdade" name="faculdade" class="form-select" required>
+            <option value="">-- Selecione uma Faculdade --</option>
+          </select>
+        </div>
+
+        <button type="submit" id="botao-enviar" class="btnD">Adicionar Disciplina</button>
+      </form>
+    </div>
+
+    <hr>
+
+    <h2>Disciplinas Cadastradas</h2>
+    <div class="disciplinas-container">
+      <button id="btn-esquerda" class="scroll-btn" aria-label="Anterior">&lt;</button>
+      <div id="lista-de-disciplinas"></div>
+      <button id="btn-direita" class="scroll-btn" aria-label="Próximo">&gt;</button>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer id="contato">
+    <div class="container footer-content">
+      <div>
+        <strong>Tarefando</strong>
+        <p class="section-desc">Cadernos e estudos compartilhados.</p>
+      </div>
+      <div>
+        <p><a href="#planos">Preços e planos</a></p>
+        <p><a href="#">Termos</a> · <a href="#">Privacidade</a></p>
+      </div>
+      <div>
+        <p>Contato: <a href="mailto:contato@tarefando.app">contato@tarefando.app</a></p>
+        <p>© <span id="y"></span> Tarefando</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Ano do rodapé
+    document.getElementById('y').textContent = new Date().getFullYear();
+
+    // Popover do menu de conta
+    (function () {
+      const btn = document.getElementById('accountBtn');
+      const menu = document.getElementById('accountMenu');
+      if (!btn || !menu) return;
+      const wrap = btn.parentElement;
+
+      const close = () => { wrap.classList.remove('is-open'); btn.setAttribute('aria-expanded', 'false'); };
+      const toggle = () => { const o = wrap.classList.toggle('is-open'); btn.setAttribute('aria-expanded', o ? 'true' : 'false'); };
+
+      btn.addEventListener('click', toggle);
+      document.addEventListener('click', (e) => { if (!wrap.contains(e.target)) close(); });
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { close(); btn.focus(); } });
+    })();
+  </script>
+
+  <!-- JS correto desta página -->
+  <!-- ALTERAÇÃO: caminho ABSOLUTO para garantir carregamento de qualquer subpasta -->
+  <script src="/codigo/public/assets/js/disciplinas-page.js" defer></script>
+</body>
+</html>

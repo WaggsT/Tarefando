@@ -1,0 +1,59 @@
+{
+  "Caderno": [
+    {
+      "id": 1,
+      "name": "Resumo de Algoritmos I - Aula 1 a 5",
+      "descricao": "Anotações e exemplos dos primeiros cinco módulos de Algoritmos e Estruturas de Dados. Inclui notação Big O.",
+      "conteudo": "Aqui viria o conteúdo detalhado do caderno...",
+      "disciplina_id": 101,
+      "usuario_id": 10
+    },
+    {
+      "id": 2,
+      "name": "Cálculo II - Integrais Duplas",
+      "descricao": "Guia passo a passo para resolver integrais duplas, com foco nos teoremas de Fubini e aplicações em volume.",
+      "conteudo": "Conteúdo de Cálculo II...",
+      "disciplina_id": 102,
+      "usuario_id": 11
+    },
+    {
+      "id": 3,
+      "name": "Mapa Mental - História Moderna",
+      "descricao": "Esquema visual sobre a Revolução Francesa e o Iluminismo, ótimo para revisão rápida.",
+      "conteudo": "Conteúdo de História...",
+      "disciplina_id": 103,
+      "usuario_id": 10
+    },
+    {
+      "id": 4,
+      "name": "Tópicos Avançados de Termoquímica",
+      "descricao": "Anotações do Professor Silva, focado em conceitos complexos de Termoquímica. Nível de dificuldade alto.",
+      "conteudo": "Conteúdo de Termoquímica...",
+      "disciplina_id": 104,
+      "usuario_id": 12
+    }
+  ],
+  "Anexo": [
+    {
+      "id": 1,
+      "name": "Lista de Exercícios 1",
+      "dataPost": "2025-10-20T10:00:00Z",
+      "diretorio": "uploads/algoritmos_lista1.pdf",
+      "caderno_id": 1
+    },
+    {
+      "id": 2,
+      "name": "Gráfico de Curvas",
+      "dataPost": "2025-10-21T12:30:00Z",
+      "diretorio": "uploads/calculo_curvas.png",
+      "caderno_id": 2
+    }
+  ],
+  "Disciplina": [
+    { "id": 101, "name": "Algoritmos e Estruturas de Dados I" },
+    { "id": 102, "name": "Cálculo Diferencial e Integral II" },
+    { "id": 103, "name": "História Moderna" },
+    { "id": 104, "name": "Termoquímica Avançada" }
+  ]
+}
+
