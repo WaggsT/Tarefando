@@ -15,43 +15,7 @@
   <a class="sr-only" href="#conteudo-principal">Pular para o conteúdo principal</a>
 
   <!-- HEADER (igual ao index) -->
-  <header>
-    <div class="container nav" style="display:flex;align-items:center;justify-content:space-between;gap:1rem;">
-      <a id="brandLink" href="/codigo/public/index.html#home" class="brand" aria-label="Página inicial Tarefando">
-        <span class="brand-badge" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <path d="M6 4h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H9l-3 2V4z" stroke="white" stroke-opacity=".9" stroke-width="1.5"/>
-            <path d="M9 8h6M9 12h6M9 16h4" stroke="white" stroke-opacity=".9" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
-        </span>
-        <span>Tarefando</span>
-      </a>
-
-      <nav class="menu" aria-label="menu principal" style="flex:1;justify-content:center;">
-        <a class="btn" href="/codigo/public/index.html#home">Home</a>
-        <a class="btn" href="/codigo/public/Faculdades-Maria-Eduarda/faculdades.html">Faculdades</a>
-        <a class="btn" href="/codigo/public/Cadernos-Isabelle/cadernos.html">Cadernos</a>
-        <a class="btn" href="/codigo/public/Disciplinas-Divan/disciplinas.html">Disciplinas</a>
-        <a class="btn" href="/codigo/public/Grupo-Wagner/grupos.html">Grupos</a>
-        <a class="btn" href="/codigo/public/assinaturas.html">Assinaturas</a>
-        <a class="btn" href="/codigo/public/faq.html" aria-current="page">FAQ</a>
-      </nav>
-
-      <div class="account" style="margin-left:auto;">
-        <button id="accountBtn" class="btn btn--round" aria-haspopup="menu" aria-expanded="false" aria-controls="accountMenu">
-          <span class="sr-only">Abrir menu da conta</span>
-          <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none">
-            <circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="2" />
-            <path d="M4 20c0-4 4-6 8-6s8 2 8 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          </svg>
-        </button>
-        <div id="accountMenu" class="menu-popover" role="menu">
-          <a role="menuitem" class="menu-item" href="#entrar">Entrar</a>
-          <a role="menuitem" class="menu-item highlight" href="#cadastro">Cadastrar</a>
-        </div>
-      </div>
-    </div>
-  </header>
+  <header></header>
 
   <main id="conteudo-principal">
     <!-- HERO PEQUENO -->
@@ -191,24 +155,10 @@
   </main>
 
   <!-- FOOTER (igual ao index) -->
-  <footer id="contato">
-    <div class="container footer-content">
-      <div>
-        <strong>Tarefando</strong>
-        <p class="section-desc">Cadernos e estudos compartilhados.</p>
-      </div>
-      <div>
-        <p><a href="#planos">Preços e planos</a></p>
-        <p><a href="#">Termos</a> · <a href="#">Privacidade</a></p>
-      </div>
-      <div>
-        <p>Contato: <a href="mailto:contato@tarefando.app">contato@tarefando.app</a></p>
-        <p>© <span id="y"></span> Tarefando</p>
-      </div>
-    </div>
-  </footer>
+  <footer id="contato"></footer>
 
   <!-- JS da página FAQ -->
+  <script src="/codigo/public/assets/js/layout.js" defer></script>
   <script src="/codigo/public/assets/js/faq-page.js" defer></script>
 </body>
 </html>
