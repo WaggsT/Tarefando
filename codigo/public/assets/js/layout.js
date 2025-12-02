@@ -13,7 +13,7 @@
 
   const headerTemplate = () => `
     <div class="container nav" style="display:flex;align-items:center;justify-content:space-between;gap:1rem;">
-      <a id="brandLink" href="${BASE}index.html#home" class="brand" aria-label="Pagina inicial Tarefando">
+      <a id="brandLink" href="${BASE}index.html#home" class="brand" aria-label="P?gina inicial Tarefando">
         <span class="brand-text">Tarefando</span>
       </a>
       <nav id="mainMenu" class="menu" aria-label="menu principal" style="flex:1;justify-content:center;">
@@ -44,7 +44,7 @@
         <p class="section-desc">Cadernos e estudos compartilhados.</p>
       </div>
       <div>
-        <p><a href="${BASE}assinaturas.html">Precos e planos</a></p>
+        <p><a href="${BASE}assinaturas.html">Pre?os e planos</a></p>
         <p><a href="#">Termos</a> ? <a href="#">Privacidade</a></p>
       </div>
       <div>
@@ -92,6 +92,10 @@
     const toggle = document.querySelector(".menu-toggle");
     const menu = document.getElementById("mainMenu");
     if (!toggle || !menu) return;
+    const close = () => {
+      menu.classList.remove("is-open");
+      toggle.setAttribute("aria-expanded", "false");
+    };
     const setState = (open) => {
       menu.classList.toggle("is-open", open);
       toggle.setAttribute("aria-expanded", open ? "true" : "false");
@@ -99,6 +103,16 @@
     toggle.addEventListener("click", () => {
       const next = !menu.classList.contains("is-open");
       setState(next);
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!toggle.contains(e.target) && !menu.contains(e.target)) {
+        close();
+      }
+    });
+
+    window.addEventListener("resize", () => {
+      if (window.innerWidth >= 768) close();
     });
   }
 
