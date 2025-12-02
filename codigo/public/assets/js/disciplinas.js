@@ -59,7 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
       mapFaculdades = {};
       faculdades.forEach((f) => {
         const id = f?.id;
-        const nome = f?.nome || f?.name || "Sem nome";
+        const nome = f?.name || f?.nome || "Sem nome";
         if (id == null) return;
         mapFaculdades[String(id)] = nome;
         const opt = document.createElement("option");
@@ -103,9 +103,11 @@ document.addEventListener("DOMContentLoaded", () => {
     disciplinas.forEach((disc) => {
       const nomeFac = mapFaculdades[String(disc.faculdade_id)] || "Faculdade desconhecida";
       const card = document.createElement("div");
-      card.className = "card";
-      card.style.width = "18rem";
+      card.className = "card card-disciplina";
+      const seed = disc.id || disc.name || "disciplina";
+      const imageUrl = `https://picsum.photos/seed/disciplina-${encodeURIComponent(seed)}/400/240`;
       card.innerHTML = `
+        <div class="card-thumb" style="background-image:url('${imageUrl}')"></div>
         <div class="card-body">
           <h5 class="card-title">Disciplina:</h5>
           <p>${disc.name || "Sem nome"}</p>

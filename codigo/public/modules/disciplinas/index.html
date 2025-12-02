@@ -1,23 +1,27 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>CRUD Disciplinas</title>
-
-  <!-- Bootstrap (ok) -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
-
-  <!-- Tema global padronizado (ABSOLUTO p/ funcionar de qualquer pasta) -->
-  <!-- ALTERAÇÃO: mantém caminho absoluto /codigo/public -->
   <link rel="stylesheet" href="/codigo/public/assets/css/style.css?v=1">
   <link rel="icon" href="/codigo/public/assets/images/logo-tarefando.png" type="image/png">
 </head>
-
 <body>
-<header></header>
+  <a class="sr-only" href="#conteudo-principal">Pular para o conteúdo principal</a>
+  <header></header>
 
-  <div class="container mt-4">
+  <main id="conteudo-principal" class="container mt-4">
+    <h2>Disciplinas Cadastradas</h2>
+    <div class="disciplinas-container">
+      <button id="btn-esquerda" class="scroll-btn" aria-label="Anterior">&lt;</button>
+      <div id="lista-de-disciplinas"></div>
+      <button id="btn-direita" class="scroll-btn" aria-label="Próximo">&gt;</button>
+    </div>
+
+    <hr>
+
     <div class="cartao">
       <form id="formulario-de-disciplinas">
         <input type="hidden" id="disciplinas-id">
@@ -47,22 +51,10 @@
         <button type="submit" id="botao-enviar" class="btnD">Adicionar Disciplina</button>
       </form>
     </div>
+  </main>
 
-    <hr>
-
-    <h2>Disciplinas Cadastradas</h2>
-    <div class="disciplinas-container">
-      <button id="btn-esquerda" class="scroll-btn" aria-label="Anterior">&lt;</button>
-      <div id="lista-de-disciplinas"></div>
-      <button id="btn-direita" class="scroll-btn" aria-label="Próximo">&gt;</button>
-    </div>
-  </div>
-
-  <!-- FOOTER -->
   <footer id="contato"></footer>
 
-  <!-- JS correto desta página -->
-  <!-- ALTERAÇÃO: caminho ABSOLUTO para garantir carregamento de qualquer subpasta -->
   <script src="/codigo/public/assets/js/layout.js" defer></script>
   <script src="/codigo/public/assets/js/disciplinas.js" defer></script>
 </body>

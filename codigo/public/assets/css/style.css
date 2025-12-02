@@ -482,6 +482,17 @@ footer .logo{
   margin-top:0.4rem;
   margin-bottom:1rem;
 }
+.card-disciplina{
+  padding:0;
+  overflow:hidden;
+}
+.card-disciplina .card-thumb{
+  width:100%;
+  aspect-ratio:16/9;
+  border-radius:18px 18px 0 0;
+  background-size:cover;
+  background-position:center;
+}
 
 /* ==================== RESPONSIVIDADE ==================== */
 .menu-toggle{
