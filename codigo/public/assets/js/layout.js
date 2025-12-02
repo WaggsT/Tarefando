@@ -8,7 +8,8 @@
     { id: "disciplinas", label: "Disciplinas", href: `${BASE}modules/disciplinas/index.html`, match: ["modules/disciplinas", "disciplinas.html"] },
     { id: "grupos", label: "Grupos", href: `${BASE}modules/grupos/index.html`, match: ["modules/grupos", "grupos.html", "grupo.html"] },
     { id: "assinaturas", label: "Assinaturas", href: `${BASE}assinaturas.html`, match: ["assinaturas.html"] },
-    { id: "faq", label: "FAQ", href: `${BASE}faq.html`, match: ["faq.html"] }
+    { id: "faq", label: "FAQ", href: `${BASE}faq.html`, match: ["faq.html"] },
+    { id: "login", label: "Login", href: `${BASE}modulos/login/index.html`, match: ["modulos/login", "login.html"] }
   ];
 
   const headerTemplate = () => `
