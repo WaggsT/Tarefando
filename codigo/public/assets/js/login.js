@@ -293,6 +293,14 @@
 
     setupCepListener();
 
+    // Seleciona a aba conforme a querystring (?mode=login|signup)
+    const mode = new URLSearchParams(location.search).get("mode");
+    if (mode === "signup") {
+      switchToSignupForm();
+    } else {
+      switchToLoginForm();
+    }
+
     // Inicializa integrações sociais (só funcionam com client_id configurado)
     initGoogleLogin();
     initMicrosoftLogin();

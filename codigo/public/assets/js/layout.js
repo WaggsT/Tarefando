@@ -8,8 +8,7 @@
     { id: "disciplinas", label: "Disciplinas", href: `${BASE}modules/disciplinas/index.html`, match: ["modules/disciplinas", "disciplinas.html"] },
     { id: "grupos", label: "Grupos", href: `${BASE}modules/grupos/index.html`, match: ["modules/grupos", "grupos.html", "grupo.html"] },
     { id: "assinaturas", label: "Assinaturas", href: `${BASE}assinaturas.html`, match: ["assinaturas.html"] },
-    { id: "faq", label: "FAQ", href: `${BASE}faq.html`, match: ["faq.html"] },
-    { id: "login", label: "Login", href: `${BASE}modulos/login/index.html`, match: ["modulos/login", "login.html"] }
+    { id: "faq", label: "FAQ", href: `${BASE}faq.html`, match: ["faq.html"] }
   ];
 
   const headerTemplate = () => `
@@ -35,8 +34,8 @@
           </svg>
         </button>
         <div id="accountMenu" class="menu-popover" role="menu">
-          <a role="menuitem" class="menu-item" href="#entrar">Entrar</a>
-          <a role="menuitem" class="menu-item highlight" href="#cadastro">Cadastrar</a>
+          <a role="menuitem" class="menu-item" href="${BASE}modulos/login/index.html?mode=login">Entrar</a>
+          <a role="menuitem" class="menu-item highlight" href="${BASE}modulos/login/index.html?mode=signup">Cadastrar</a>
         </div>
       </div>
     </div>`;
