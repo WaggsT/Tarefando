@@ -48,8 +48,8 @@ body{
   /* fundo aquarelado suave */
   background:
     radial-gradient(1200px 600px at 80% -10%, rgba(235,193,114,.18), transparent 60%),
-    radial-gradient(1000px 500px at -10% 10%, rgba(179,76,72,.08), transparent 60%),
-    linear-gradient(180deg,#FEFBF6 0%, #FBF1DE 100%);
+    radial-gradient(1000px 500px at -10% 10%, rgba(179,76,72,.06), transparent 60%),
+    linear-gradient(180deg, #FEFBF6 0%, #FBF8F0 45%, #FBF1DE 100%);
 }
 a{color:var(--brand);text-decoration:none}
 a:hover{text-decoration:underline}
@@ -486,13 +486,15 @@ footer .logo{
 /* ==================== RESPONSIVIDADE ==================== */
 .menu-toggle{
   display:none;
-  flex-direction:column;
+  align-items:center;
   justify-content:center;
   gap:4px;
-  width:32px;height:32px;
+  width:34px;
+  height:34px;
   border-radius:999px;
   border:1px solid var(--line);
-  background:#fff;
+  background:linear-gradient(135deg, rgba(235,193,114,.22), #fff);
+  box-shadow:0 4px 10px rgba(0,0,0,.05);
   cursor:pointer;
   padding:4px;
 }
@@ -500,8 +502,12 @@ footer .logo{
   display:block;
   height:2px;
   width:16px;
-  background:var(--ink);
+  background:var(--brand);
   border-radius:999px;
+}
+.menu-toggle:hover{
+  background:linear-gradient(135deg, rgba(235,193,114,.32), #fff);
+  box-shadow:0 6px 16px rgba(0,0,0,.08);
 }
 
 @media (max-width: 1024px){
@@ -575,6 +581,7 @@ footer .logo{
     align-items:center;
     position:relative;
   }
+  header .nav > .brand{margin-right:.35rem;}
 }
 .btn-criar-plano{
   border-radius:999px;
