@@ -435,3 +435,30 @@ footer{padding:32px 0;color:var(--muted);border-top:1px solid var(--line)}
     grid-template-columns: 1fr;
   }
 }
+
+.logo{
+  height:32px;
+  width:auto;
+  display:inline-block;
+  vertical-align:middle;
+}
+footer .logo{
+  height:20px;
+  opacity:.9;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+.brand-text {
+  font-weight: 800;
+  font-size: 1.35rem;
+  letter-spacing: 0.04em;
+  color: var(--brand);
+  position: relative;
+  padding: 0.2rem 0.75rem;
+  border-radius: 999px;
+  background: linear-gradient(135deg, rgba(235,193,114,.25), rgba(251,246,238,.9));
+  box-shadow: 0 4px 10px rgba(0,0,0,.04);
+}

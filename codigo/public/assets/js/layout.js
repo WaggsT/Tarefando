@@ -13,14 +13,8 @@
 
   const headerTemplate = () => `
     <div class="container nav" style="display:flex;align-items:center;justify-content:space-between;gap:1rem;">
-      <a href="${BASE}index.html#home" class="brand" aria-label="Pagina inicial Tarefando">
-        <span class="brand-badge" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <path d="M6 4h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H9l-3 2V4z" stroke="white" stroke-opacity=".9" stroke-width="1.5"/>
-            <path d="M9 8h6M9 12h6M9 16h4" stroke="white" stroke-opacity=".9" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
-        </span>
-        <span>Tarefando</span>
+      <a id="brandLink" href="${BASE}index.html#home" class="brand" aria-label="Pagina inicial Tarefando">
+        <span class="brand-text">Tarefando</span>
       </a>
       <nav class="menu" aria-label="menu principal" style="flex:1;justify-content:center;">
         ${menuItems.map(item => `<a class="btn" data-menu-id="${item.id}" href="${item.href}">${item.label}</a>`).join("")}
