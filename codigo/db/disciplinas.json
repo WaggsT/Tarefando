@@ -1,4 +1,5 @@
-{
+[
+  {
     "id": "92fd",
     "name": "calculo 1",
     "descricao": "aula legal",
@@ -7,7 +8,7 @@
   },
   {
     "name": "ATP",
-    "descricao": "Aula de algoritmos e tÃ©cnicas de programaÃ§Ã£o utilizando linguagem Csharp",
+    "descricao": "Aula de algoritmos e técnicas de programação utilizando linguagem Csharp",
     "professor": "cristiano",
     "faculdade_id": 5,
     "id": "e845"
@@ -27,9 +28,9 @@
     "faculdade_id": 4
   },
   {
-    "name": "mecÃ¢nica",
-    "descricao": "Aula prÃ¡tica do curso de engenharia mecÃ¢nica",
-    "professor": "Jailson mendes",
+    "name": "mecânica",
+    "descricao": "Aula prática do curso de engenharia mecânica",
+    "professor": "Jailson Mendes",
     "faculdade_id": 3,
     "id": "77fd"
   }

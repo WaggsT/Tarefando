@@ -1,242 +1,210 @@
-document.addEventListener('DOMContentLoaded', () => {
-  // Se a página não tiver o formulário/área de lista, sai silenciosamente.
-  // (Evita erro caso este JS seja incluído em outra página por engano)
-  const rootForm = document.getElementById('formulario-de-disciplinas');
-  const rootList = document.getElementById('lista-de-disciplinas');
-  if (!rootForm || !rootList) return;
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("formulario-de-disciplinas");
+  const lista = document.getElementById("lista-de-disciplinas");
+  const selectFaculdade = document.getElementById("faculdade");
+  const campoId = document.getElementById("disciplinas-id");
+  const campoNome = document.getElementById("nome");
+  const campoDesc = document.getElementById("descricao");
+  const campoProf = document.getElementById("professor");
+  const btnEnviar = document.getElementById("botao-enviar");
+  const scrollContainer = document.getElementById("lista-de-disciplinas");
+  const btnEsq = document.getElementById("btn-esquerda");
+  const btnDir = document.getElementById("btn-direita");
 
-  const replit = 'https://a4f895a6-a0fd-462c-853c-0543f2aa0f9b-00-2lipl175tt1oo.janeway.replit.dev/'; // substitua pela sua URL do Replit
-  const urlDisciplinas = replit + 'disciplinas';
-  const urlFaculdades = replit + 'Faculdade';
+  if (!form || !lista || !selectFaculdade) return;
 
-  const formularioDeDisciplinas = rootForm;
-  const campoIdDaDisciplinas = document.getElementById('disciplinas-id');
-  const botaoEnviar = document.getElementById('botao-enviar');
-  const listaDeDisciplinas = rootList;
-  const selectFaculdade = document.getElementById('faculdade');
+  const STORAGE_KEY = "tarefando_disciplinas";
+  const FACULDADES_URL = "/codigo/db/faculdades.json";
+  const DISCIPLINAS_URL = "/codigo/db/disciplinas.json";
 
   let disciplinas = [];
-  let mapFaculdades = {}; // Map id -> nome da faculdade
+  let mapFaculdades = {}; // id -> nome
 
-  // Carregar faculdades e preencher o <select>
-  const carregarFaculdades = async () => {
+  function normalizarLista(json) {
+    if (Array.isArray(json)) return json;
+    if (Array.isArray(json?.disciplinas)) return json.disciplinas;
+    if (Array.isArray(json?.data)) return json.data;
+    if (json && typeof json === "object") {
+      // se for um objeto único com campos de disciplina, embrulha em array
+      if ("id" in json && ("name" in json || "descricao" in json)) return [json];
+      return Object.values(json);
+    }
+    return [];
+  }
+
+  function loadFromStorage() {
     try {
-      // ALTERAÇÃO: buscava em urlDisciplinas; deve buscar em urlFaculdades
-      const res = await fetch(urlFaculdades, { cache: 'no-store' });
-      if (!res.ok) throw new Error('Falha ao carregar faculdades');
-      const json = await res.json();
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return null;
+      const arr = JSON.parse(raw);
+      return Array.isArray(arr) ? arr : null;
+    } catch (_) {
+      return null;
+    }
+  }
+  function saveToStorage() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(disciplinas || []));
+    } catch (_) {}
+  }
 
-      // ALTERAÇÃO: trata formatos diferentes (array direto ou propriedade)
-      const faculdades = Array.isArray(json)
-        ? json
-        : (json.faculdades || json.data || []);
+  async function carregarFaculdades() {
+    try {
+      const resp = await fetch(FACULDADES_URL, { cache: "no-store" });
+      if (!resp.ok) throw new Error("HTTP " + resp.status);
+      const data = await resp.json();
+      const faculdades = normalizarLista(data);
 
       selectFaculdade.innerHTML = '<option value="">-- Selecione uma Faculdade --</option>';
       mapFaculdades = {};
-
       faculdades.forEach((f) => {
         const id = f?.id;
-        const nome = f?.nome || f?.name || 'Sem nome';
+        const nome = f?.nome || f?.name || "Sem nome";
         if (id == null) return;
-
         mapFaculdades[String(id)] = nome;
-
-        const opt = document.createElement('option');
+        const opt = document.createElement("option");
         opt.value = String(id);
         opt.textContent = nome;
         selectFaculdade.appendChild(opt);
       });
     } catch (err) {
-      console.error('Erro ao carregar faculdades:', err);
+      console.error("Erro ao carregar faculdades", err);
       selectFaculdade.innerHTML = '<option value="">Erro ao carregar faculdades</option>';
     }
-  };
+  }
 
-  // Buscar disciplinas
-  const buscarDisciplinas = async () => {
-    try {
-      const res = await fetch(urlDisciplinas, { cache: 'no-store' });
-      if (!res.ok) throw new Error('Falha ao buscar disciplinas');
-      const json = await res.json();
-
-      // Mantém compatibilidade com diferentes formatos
-      disciplinas = Array.isArray(json) ? json : (json.disciplinas || json.data || []);
-      apresentarTabela();
-    } catch (error) {
-      console.error(error);
-      listaDeDisciplinas.innerHTML = `<h2 class="warning">Erro ao buscar disciplinas</h2>`;
+  async function carregarDisciplinas() {
+    const stored = loadFromStorage();
+    if (stored) {
+      disciplinas = stored;
+      render();
+      return;
     }
-  };
+    try {
+      const resp = await fetch(DISCIPLINAS_URL, { cache: "no-store" });
+      if (!resp.ok) throw new Error("HTTP " + resp.status);
+      const data = await resp.json();
+      disciplinas = normalizarLista(data);
+      saveToStorage();
+      render();
+    } catch (err) {
+      console.error("Erro ao buscar disciplinas", err);
+      lista.innerHTML = `<h2 class="warning">Erro ao buscar disciplinas</h2>`;
+    }
+  }
 
-  // Apresentar disciplinas na tela
-  const apresentarTabela = () => {
-    listaDeDisciplinas.innerHTML = '';
-
+  function render() {
+    lista.innerHTML = "";
     if (!Array.isArray(disciplinas) || disciplinas.length === 0) {
-      listaDeDisciplinas.innerHTML = '<h5 class="text-muted">Nenhuma disciplina cadastrada.</h5>';
+      lista.innerHTML = '<h5 class="text-muted">Nenhuma disciplina cadastrada.</h5>';
       return;
     }
 
-    disciplinas.forEach((disciplina) => {
-      const nomeFaculdade = mapFaculdades[String(disciplina.faculdade_id)] || 'Faculdade desconhecida';
-
-      const cartao = document.createElement('div');
-      cartao.className = 'card';
-      cartao.style.width = '18rem';
-
-      cartao.innerHTML = `
+    disciplinas.forEach((disc) => {
+      const nomeFac = mapFaculdades[String(disc.faculdade_id)] || "Faculdade desconhecida";
+      const card = document.createElement("div");
+      card.className = "card";
+      card.style.width = "18rem";
+      card.innerHTML = `
         <div class="card-body">
           <h5 class="card-title">Disciplina:</h5>
-          <p>${disciplina.name || 'Sem nome'}</p>
+          <p>${disc.name || "Sem nome"}</p>
 
           <h6 class="card-subtitle mb-2 text-muted">Descrição:</h6>
-          <p>${disciplina.descricao || 'Sem descrição'}</p>
+          <p>${disc.descricao || "Sem descrição"}</p>
 
           <h6 class="card-subtitle mb-2 text-muted">Professor:</h6>
-          <p>${disciplina.professor || 'Sem professor'}</p>
+          <p>${disc.professor || "Sem professor"}</p>
 
           <h6 class="card-subtitle mb-2 text-muted">Faculdade:</h6>
-          <p>${nomeFaculdade}</p>
+          <p>${nomeFac}</p>
 
           <div class="mt-2" style="display:flex;gap:.5rem;flex-wrap:wrap">
-            <button class="botao-editar btnE btn-sm" data-id="${disciplina.id}">✏️ Editar</button>
-            <button class="botao-excluir btnX btn-sm" data-id="${disciplina.id}">🗑️ Excluir</button>
+            <button class="botao-editar btnE btn-sm" data-id="${disc.id}">Editar</button>
+            <button class="botao-excluir btnX btn-sm" data-id="${disc.id}">Excluir</button>
           </div>
         </div>
       `;
-
-      listaDeDisciplinas.appendChild(cartao);
+      lista.appendChild(card);
     });
-  };
+  }
 
-  // Enviar disciplina (POST)
-  const enviarDisciplinas = async (disc) => {
-    try {
-      const res = await fetch(urlDisciplinas, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(disc),
-      });
-      if (!res.ok) throw new Error(await res.text());
-    } catch (err) {
-      alert('Erro ao enviar disciplina!');
-      console.error(err);
-    }
-  };
+  function limparFormulario() {
+    form.reset();
+    campoId.value = "";
+    if (btnEnviar) btnEnviar.textContent = "Adicionar Disciplina";
+  }
 
-  // Atualizar disciplina (PUT)
-  const atualizarDisciplinas = async (id, disc) => {
-    try {
-      const res = await fetch(`${urlDisciplinas}/${id}`, {
-        method: 'PUT', // poderia ser PATCH, mantendo PUT para compatibilidade com o colega
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(disc),
-      });
-      if (!res.ok) throw new Error(await res.text());
-    } catch (err) {
-      alert('Erro ao atualizar disciplina!');
-      console.error(err);
-    }
-  };
+  async function criarDisciplina(disc) {
+    const nextId = disciplinas.length ? Math.max(...disciplinas.map(d => Number(d.id) || 0)) + 1 : 1;
+    disciplinas.push({ ...disc, id: nextId });
+    saveToStorage();
+  }
 
-  // Excluir disciplina (DELETE)
-  const excluirDisciplinas = async (id) => {
-    try {
-      const res = await fetch(`${urlDisciplinas}/${id}`, { method: 'DELETE' });
-      if (!res.ok) throw new Error(await res.text());
-    } catch (err) {
-      alert('Erro ao excluir disciplina!');
-      console.error(err);
-    }
-  };
+  async function atualizarDisciplina(id, disc) {
+    disciplinas = disciplinas.map(d => String(d.id) === String(id) ? { ...d, ...disc, id: d.id } : d);
+    saveToStorage();
+  }
 
-  // Limpar formulário
-  const limparFormulario = () => {
-    formularioDeDisciplinas.reset();
-    campoIdDaDisciplinas.value = '';
-    botaoEnviar.textContent = 'Adicionar Disciplina';
-  };
+  async function excluirDisciplina(id) {
+    disciplinas = disciplinas.filter(d => String(d.id) !== String(id));
+    saveToStorage();
+  }
 
-  // Submit do formulário
-  formularioDeDisciplinas.addEventListener('submit', async (event) => {
-    event.preventDefault();
-
-    const id = campoIdDaDisciplinas.value;
-    const name = document.getElementById('nome').value.trim();
-    const descricao = document.getElementById('descricao').value.trim();
-    const professor = document.getElementById('professor').value.trim();
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const id = campoId.value;
+    const name = campoNome.value.trim();
+    const descricao = campoDesc.value.trim();
+    const professor = campoProf.value.trim();
     const faculdade_id = selectFaculdade.value;
 
     if (!faculdade_id) {
-      alert('Por favor, selecione uma faculdade.');
+      alert("Por favor, selecione uma faculdade.");
       return;
     }
 
     const disc = { name, descricao, professor, faculdade_id: Number(faculdade_id) };
-
     if (id) {
-      await atualizarDisciplinas(id, disc);
+      await atualizarDisciplina(id, disc);
     } else {
-      await enviarDisciplinas(disc);
+      await criarDisciplina(disc);
     }
-
-    await buscarDisciplinas();
+    render();
     limparFormulario();
   });
 
-  // Botões editar/excluir
-  listaDeDisciplinas.addEventListener('click', async (event) => {
-    const alvo = event.target;
+  lista.addEventListener("click", async (e) => {
+    const alvo = e.target;
     const id = alvo.dataset.id;
     if (!id) return;
 
-    if (alvo.classList.contains('botao-editar')) {
-      const encontrada = disciplinas.find((p) => String(p.id) === String(id));
+    if (alvo.classList.contains("botao-editar")) {
+      const encontrada = disciplinas.find((d) => String(d.id) === String(id));
       if (encontrada) {
-        campoIdDaDisciplinas.value = encontrada.id;
-        document.getElementById('nome').value = encontrada.name || '';
-        document.getElementById('descricao').value = encontrada.descricao || '';
-        document.getElementById('professor').value = encontrada.professor || '';
-        selectFaculdade.value = encontrada.faculdade_id || '';
-        botaoEnviar.textContent = 'Atualizar Disciplina';
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        campoId.value = encontrada.id;
+        campoNome.value = encontrada.name || "";
+        campoDesc.value = encontrada.descricao || "";
+        campoProf.value = encontrada.professor || "";
+        selectFaculdade.value = encontrada.faculdade_id || "";
+        if (btnEnviar) btnEnviar.textContent = "Atualizar Disciplina";
       }
-    } else if (alvo.classList.contains('botao-excluir')) {
-      if (confirm('Tem certeza que deseja excluir esta disciplina?')) {
-        await excluirDisciplinas(id);
-        await buscarDisciplinas();
+    }
+
+    if (alvo.classList.contains("botao-excluir")) {
+      if (confirm("Tem certeza que deseja excluir esta disciplina?")) {
+        await excluirDisciplina(id);
+        render();
       }
     }
   });
 
-  // Inicialização
-  carregarFaculdades();
-  buscarDisciplinas();
-
-  // ===== Scroll horizontal (lista de cartões) =====
-  const area = document.getElementById('lista-de-disciplinas');
-  const btnEsq = document.getElementById('btn-esquerda');
-  const btnDir = document.getElementById('btn-direita');
-
-  if (area && btnEsq && btnDir) {
-    const scrollStep = 320; // 1 card (300px) + gap (20px)
-
-    btnEsq.addEventListener('click', () => {
-      area.scrollBy({ left: -scrollStep, behavior: 'smooth' });
-    });
-
-    btnDir.addEventListener('click', () => {
-      area.scrollBy({ left: scrollStep, behavior: 'smooth' });
-    });
-
-    function atualizarBotoes() {
-      btnEsq.style.display = area.scrollLeft > 0 ? 'flex' : 'none';
-      btnDir.style.display =
-        area.scrollLeft + area.clientWidth < area.scrollWidth ? 'flex' : 'none';
-    }
-
-    area.addEventListener('scroll', atualizarBotoes);
-    window.addEventListener('resize', atualizarBotoes);
-    atualizarBotoes();
+  if (btnEsq && btnDir && scrollContainer) {
+    const scroll = (delta) => { scrollContainer.scrollLeft += delta; };
+    btnEsq.addEventListener("click", () => scroll(-200));
+    btnDir.addEventListener("click", () => scroll(200));
   }
+
+  carregarFaculdades();
+  carregarDisciplinas();
 });
