@@ -16,9 +16,12 @@
       <a id="brandLink" href="${BASE}index.html#home" class="brand" aria-label="Pagina inicial Tarefando">
         <span class="brand-text">Tarefando</span>
       </a>
-      <nav class="menu" aria-label="menu principal" style="flex:1;justify-content:center;">
+      <nav id="mainMenu" class="menu" aria-label="menu principal" style="flex:1;justify-content:center;">
         ${menuItems.map(item => `<a class="btn" data-menu-id="${item.id}" href="${item.href}">${item.label}</a>`).join("")}
       </nav>
+      <button class="menu-toggle" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="mainMenu">
+        <span></span><span></span><span></span>
+      </button>
       <div class="account" style="margin-left:auto;">
         <button id="accountBtn" class="btn btn--round" aria-haspopup="menu" aria-expanded="false" aria-controls="accountMenu">
           <span class="sr-only">Abrir menu da conta</span>
@@ -85,6 +88,20 @@
     if (y) y.textContent = new Date().getFullYear();
   }
 
+  function wireMenuToggle() {
+    const toggle = document.querySelector(".menu-toggle");
+    const menu = document.getElementById("mainMenu");
+    if (!toggle || !menu) return;
+    const setState = (open) => {
+      menu.classList.toggle("is-open", open);
+      toggle.setAttribute("aria-expanded", open ? "true" : "false");
+    };
+    toggle.addEventListener("click", () => {
+      const next = !menu.classList.contains("is-open");
+      setState(next);
+    });
+  }
+
   function applyLayout() {
     const header = document.querySelector("header");
     if (header) header.innerHTML = headerTemplate();
@@ -92,6 +109,7 @@
     if (footer) footer.innerHTML = footerTemplate();
     setActiveMenu();
     wireAccountPopover();
+    wireMenuToggle();
     updateFooterYear();
   }
 
