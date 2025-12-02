@@ -61,6 +61,66 @@
     setVal("signupEstado", data.uf);
   }
 
+  async function carregarUniversidades() {
+    const select = document.getElementById("faculdadeSelect");
+    if (!select) return;
+
+    select.innerHTML = '<option value="">Carregando faculdades...</option>';
+
+    // 1) tentar API externa
+    try {
+      const resp = await fetch("https://universities.hipolabs.com/search?country=Brazil");
+      if (!resp.ok) throw new Error("HTTP " + resp.status);
+
+      const data = await resp.json();
+      if (!Array.isArray(data) || data.length === 0) {
+        throw new Error("Resposta vazia da API");
+      }
+
+      const nomes = data
+        .map(u => u.name)
+        .filter(Boolean)
+        .sort((a, b) => a.localeCompare(b, "pt-BR"));
+
+      preencherSelectUniversidades(select, nomes);
+      return;
+    } catch (err) {
+      console.warn("Falha na API externa de universidades, usando faculdades.json", err);
+    }
+
+    // 2) fallback: usar faculdades.json
+    try {
+      const respLocal = await fetch("/codigo/db/faculdades.json");
+      if (!respLocal.ok) throw new Error("HTTP " + respLocal.status);
+
+      const faculdades = await respLocal.json();
+      if (!Array.isArray(faculdades) || faculdades.length === 0) {
+        throw new Error("faculdades.json vazio ou inválido");
+      }
+
+      const nomes = faculdades
+        .map(f => f.name)
+        .filter(Boolean)
+        .sort((a, b) => a.localeCompare(b, "pt-BR"));
+
+      preencherSelectUniversidades(select, nomes);
+      return;
+    } catch (err) {
+      console.error("Erro ao carregar faculdades do arquivo local:", err);
+      select.innerHTML = '<option value="">Não foi possível carregar</option>';
+    }
+  }
+
+  function preencherSelectUniversidades(select, nomes) {
+    select.innerHTML = '<option value="">Selecione uma faculdade...</option>';
+    nomes.forEach((nome) => {
+      const opt = document.createElement("option");
+      opt.value = nome;
+      opt.textContent = nome;
+      select.appendChild(opt);
+    });
+  }
+
   /* Troca de abas */
   function switchToLoginForm() {
     const tabLogin = document.getElementById("tabLogin");
@@ -129,6 +189,7 @@
     const nome = document.getElementById("signupNome")?.value.trim();
     const email = document.getElementById("signupEmail")?.value.trim();
     const telefone = document.getElementById("signupTelefone")?.value.trim();
+    const faculdade = document.getElementById("faculdadeSelect")?.value.trim();
     const senha = document.getElementById("signupSenha")?.value.trim();
     const senha2 = document.getElementById("signupSenha2")?.value.trim();
     const cep = document.getElementById("signupCep")?.value.trim();
@@ -142,7 +203,7 @@
 
     showBlockError(cepErro, "");
 
-    if (!nome || !email || !senha || !senha2 || !cep) {
+    if (!nome || !email || !senha || !senha2 || !cep || !faculdade) {
       showBlockError(errorsEl, "Preencha os campos obrigatórios.");
       return;
     }
@@ -184,6 +245,7 @@
       email,
       senha, // Em produção, criptografar a senha antes de salvar.
       telefone,
+      faculdade,
       endereco: {
         cep,
         logradouro,
@@ -292,6 +354,7 @@
     if (signupForm) signupForm.addEventListener("submit", handleSignupSubmit);
 
     setupCepListener();
+    carregarUniversidades();
 
     // Seleciona a aba conforme a querystring (?mode=login|signup)
     const mode = new URLSearchParams(location.search).get("mode");
