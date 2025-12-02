@@ -1,23 +1,6 @@
+﻿// -------------------------------------------------------------------
+// Grupo â€“ pÃ¡gina de DETALHE (capa, descriÃ§Ã£o, aÃ§Ãµes, relacionados)
 // -------------------------------------------------------------------
-// Grupo – página de DETALHE (capa, descrição, ações, relacionados)
-// -------------------------------------------------------------------
-
-// Popover da conta + ano no rodapé
-(function () {
-  const btn = document.getElementById('accountBtn');
-  const menu = document.getElementById('accountMenu');
-  if (btn && menu) {
-    const wrap = btn.parentElement;
-    const close = () => { wrap.classList.remove('is-open'); btn.setAttribute('aria-expanded', 'false'); };
-    const toggle = () => { const o = wrap.classList.toggle('is-open'); btn.setAttribute('aria-expanded', o ? 'true' : 'false'); };
-
-    btn.addEventListener('click', toggle);
-    document.addEventListener('click', e => { if (!wrap.contains(e.target)) close(); });
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') { close(); btn.focus(); } });
-  }
-  const y = document.getElementById('y');
-  if (y) y.textContent = new Date().getFullYear();
-})();
 
 /* =================== CONFIG & ESTADO =================== */
 const LS_GROUPS = 'grupos_db_v1';   // mesmo da lista de grupos
@@ -41,16 +24,16 @@ async function getAll() {
 /* =================== RENDER =================== */
 function renderGroup(g){
   if(!g){
-    $("#title").textContent = "Grupo não encontrado";
+    $("#title").textContent = "Grupo nÃ£o encontrado";
     $("#desc").textContent  = "Verifique o link ou volte para Grupos.";
     $("#actions").innerHTML = "";
     $("#asideActions").innerHTML = "";
     return;
   }
 
-  $("#title").textContent = g.titulo || "Sem título";
+  $("#title").textContent = g.titulo || "Sem tÃ­tulo";
   $("#cover").style.backgroundImage = `url('${coverOf(g)}')`;
-  $("#desc").textContent = g.descricao || "—";
+  $("#desc").textContent = g.descricao || "â€”";
 
   // meta
   $("#meta").innerHTML = `
@@ -69,7 +52,7 @@ function renderGroup(g){
   // tags
   $("#tags").innerHTML = (g.tags||[]).map(t=>`<span class="tag">${esc(t)}</span>`).join("");
 
-  // ações (topo + aside)
+  // aÃ§Ãµes (topo + aside)
   const joined  = me.has(String(g.id));
   const joinBtn = joined ? `<button class="btn" disabled>Participando</button>`
                          : `<button class="cta" id="joinTop">Participar</button>`;
@@ -87,13 +70,13 @@ function renderGroup(g){
   });
 
   // breadcrumb
-  $("#crumb").innerHTML = `<a href="/codigo/public/modules/grupos/index.html">← Voltar para Grupos</a>` +
-    (g.curso || g.faculdade ? ` · <span class="section-desc">${esc(g.curso||g.faculdade)}</span>` : "");
+  $("#crumb").innerHTML = `<a href="/codigo/public/modules/grupos/index.html">â† Voltar para Grupos</a>` +
+    (g.curso || g.faculdade ? ` Â· <span class="section-desc">${esc(g.curso||g.faculdade)}</span>` : "");
 }
 
 function renderRelated(all, g){
   const box = $("#related");
-  if(!g){ box.innerHTML = `<p class="section-desc">—</p>`; return; }
+  if(!g){ box.innerHTML = `<p class="section-desc">â€”</p>`; return; }
 
   let rel = all.filter(x =>
     x.id !== g.id &&
@@ -126,3 +109,4 @@ function renderRelated(all, g){
   renderGroup(g);
   renderRelated(all, g);
 })();
+

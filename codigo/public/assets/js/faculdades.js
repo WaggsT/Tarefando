@@ -1,26 +1,9 @@
-// Faculdades — página
+﻿// Faculdades â€” pÃ¡gina
 // Carrega do localStorage (se existir) ou de /codigo/db/faculdades.json
-
-(function initCommon(){
-  // ano no rodapé + popover de conta
-  const y = document.getElementById('y');
-  if (y) y.textContent = new Date().getFullYear();
-
-  const btn = document.getElementById('accountBtn');
-  const menu = document.getElementById('accountMenu');
-  if (btn && menu) {
-    const wrap = btn.parentElement;
-    const close = ()=>{ wrap.classList.remove('is-open'); btn.setAttribute('aria-expanded','false'); };
-    const toggle = ()=>{ const o = wrap.classList.toggle('is-open'); btn.setAttribute('aria-expanded', o?'true':'false'); };
-    btn.addEventListener('click', toggle);
-    document.addEventListener('click', e=>{ if(!wrap.contains(e.target)) close(); });
-    document.addEventListener('keydown', e=>{ if(e.key==='Escape'){ close(); btn.focus(); }});
-  }
-})();
 
 document.addEventListener('DOMContentLoaded', () => {
   // ====== CONFIG ======
-  const LOCAL_JSON = "/codigo/db/faculdades.json"; // <- bate com sua árvore
+  const LOCAL_JSON = "/codigo/db/faculdades.json"; // <- bate com sua Ã¡rvore
   const STORAGE_ALL  = "tarefando_all_faculdades";
   const STORAGE_MY   = "tarefando_my_faculty_id";
   const STORAGE_OWN  = "tarefando_user_faculty_ids";
@@ -61,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     // busca do JSON local (absoluto)
     const r = await fetch(LOCAL_JSON, { cache: "no-store" });
-    if (!r.ok) throw new Error("Não foi possível ler " + LOCAL_JSON);
+    if (!r.ok) throw new Error("NÃ£o foi possÃ­vel ler " + LOCAL_JSON);
     allFaculdades = await r.json();
     saveAllData();
   }
@@ -77,9 +60,9 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="card-media" style="background-image:url('${esc(f.capa || `https://picsum.photos/640/360?seed=${f.id}`)}')"></div>
         <div class="group-body">
           <h3>${esc(f.name)}</h3>
-          <p class="group-desc" style="font-size:.9rem">${esc(f.endereco || "Endereço não informado")}</p>
+          <p class="group-desc" style="font-size:.9rem">${esc(f.endereco || "EndereÃ§o nÃ£o informado")}</p>
           <div class="group-actions" style="display:flex;gap:.5rem;align-items:center;margin-top:auto;min-height:40px">
-            ${isSelected ? `<button class="btn" disabled>✓ Selecionada</button>`
+            ${isSelected ? `<button class="btn" disabled>âœ“ Selecionada</button>`
                           : `<button class="cta" data-select-id="${esc(f.id)}">Selecionar</button>`}
             ${canEdit ? `<button class="btn btn--ghost btn--action btn--edit" data-edit-id="${esc(f.id)}">Editar</button>` : ""}
             ${canDelete ? `<button class="btn btn--ghost btn--action btn--delete" data-delete-id="${esc(f.id)}">Excluir</button>` : ""}
@@ -99,7 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
         <div style="flex:1">
           <h3 style="margin:0 0 .25rem">${esc(f.name)}</h3>
-          <p class="section-desc" style="margin:0;font-size:.95rem">${esc(f.endereco || "Endereço não informado")}</p>
+          <p class="section-desc" style="margin:0;font-size:.95rem">${esc(f.endereco || "EndereÃ§o nÃ£o informado")}</p>
           <div class="group-meta" style="margin-top:.5rem;font-size:.9rem;gap:1rem">
             <span>${Number(f.cursos||0)} cursos</span>
             <span>${Number(f.alunos||0)} alunos</span>
@@ -119,12 +102,12 @@ document.addEventListener('DOMContentLoaded', () => {
   function renderMyFaculty(){
     const box = $("#myFacultyBox");
     if (!myFacultyID) {
-      box.innerHTML = `<p class="section-desc">Você ainda não selecionou sua faculdade. Clique em "Selecionar" em um dos cards acima.</p>`;
+      box.innerHTML = `<p class="section-desc">VocÃª ainda nÃ£o selecionou sua faculdade. Clique em "Selecionar" em um dos cards acima.</p>`;
       return;
     }
     const f = allFaculdades.find(x => String(x.id) === String(myFacultyID));
     box.innerHTML = f ? myFacultyCardHTML(f)
-                      : `<p class="section-desc" style="color:orange">A faculdade selecionada não foi encontrada.</p>`;
+                      : `<p class="section-desc" style="color:orange">A faculdade selecionada nÃ£o foi encontrada.</p>`;
   }
   function renderAll(){
     renderCarousel();
@@ -154,7 +137,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   function handleDelete(id){
     if (!userCreatedIDs.has(String(id))) {
-      alert("Você só pode excluir faculdades que cadastrou.");
+      alert("VocÃª sÃ³ pode excluir faculdades que cadastrou.");
       return;
     }
     const name = allFaculdades.find(f => String(f.id)===String(id))?.name || "esta faculdade";
@@ -163,7 +146,7 @@ document.addEventListener('DOMContentLoaded', () => {
     allFaculdades = allFaculdades.filter(f => String(f.id)!==String(id));
     userCreatedIDs.delete(String(id));
     if (String(myFacultyID) === String(id)) {
-      clearMyFaculty(); // já renderiza/salva
+      clearMyFaculty(); // jÃ¡ renderiza/salva
     } else {
       saveAllData();
       renderAll();
@@ -191,7 +174,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function openEditForm(id){
     const fac = allFaculdades.find(f => String(f.id)===String(id));
     if (!fac || !userCreatedIDs.has(String(id))) {
-      alert("Você só pode editar faculdades que cadastrou.");
+      alert("VocÃª sÃ³ pode editar faculdades que cadastrou.");
       return;
     }
     idInput.value = fac.id;
@@ -201,7 +184,7 @@ document.addEventListener('DOMContentLoaded', () => {
     $("#facul_capa").value = fac.capa || "";
 
     formTitle.textContent = "Editar Faculdade";
-    submitBtn.textContent = "Salvar Alterações";
+    submitBtn.textContent = "Salvar AlteraÃ§Ãµes";
     statusMsg.textContent = "";
     formCard.style.display = "block";
     ctaCard.style.display  = "none";
@@ -283,7 +266,8 @@ document.addEventListener('DOMContentLoaded', () => {
       renderAll();
     } catch (e){
       console.error(e);
-      $("#carouselGrid").innerHTML = `<p class="section-desc" style="color:red"><b>Erro:</b> não deu pra carregar as faculdades.</p>`;
+      $("#carouselGrid").innerHTML = `<p class="section-desc" style="color:red"><b>Erro:</b> nÃ£o deu pra carregar as faculdades.</p>`;
     }
   })();
 });
+
