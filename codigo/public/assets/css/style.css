@@ -462,3 +462,23 @@ footer .logo{
   background: linear-gradient(135deg, rgba(235,193,114,.25), rgba(251,246,238,.9));
   box-shadow: 0 4px 10px rgba(0,0,0,.04);
 }
+.btn-criar-plano{
+  border-radius:999px;
+  padding:0.6rem 1.2rem;
+  border:1px solid var(--line);
+  background:#fff;
+  font-weight:600;
+}
+.btn-criar-plano:hover{
+  background:#fff7;
+  box-shadow:0 4px 12px rgba(0,0,0,.08);
+  text-decoration:none;
+}
+.plano-card{
+  padding:1.5rem 1.6rem;
+}
+.plano-card p{
+  line-height:1.5;
+  margin-top:0.4rem;
+  margin-bottom:1rem;
+}

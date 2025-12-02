@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "nome": "Gratuito",
+    "descricao": "Acesso ilimitado a conteúdos públicos, pode postar cadernos e atividades, responder chats e participar de grupos e monitorias. Não cria monitorias.",
+    "preco": 0
+  },
+  {
+    "id": 2,
+    "nome": "Essencial",
+    "descricao": "Plano para monitores. Pode criar e vender monitorias definindo o próprio preço, com acesso completo aos conteúdos e suporte básico.",
+    "preco": 29.9
+  },
+  {
+    "id": 3,
+    "nome": "Equipe",
+    "descricao": "Para centros acadêmicos e ligas avançadas. Permite vender materiais premium e monitorias com gestão colaborativa entre membros.",
+    "preco": 49.9
+  }
+]

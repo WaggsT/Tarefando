@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Assinaturas — Tarefando</title>
+  <title>Assinaturas ? Tarefando</title>
   <meta name="description" content="Planos do Tarefando para quem quer recursos extras.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,7 +12,7 @@
   <link rel="icon" href="/codigo/public/assets/images/logo-tarefando.png" type="image/png">
 </head>
 <body>
-  <a class="sr-only" href="#conteudo-principal">Pular para o conteúdo principal</a>
+  <a class="sr-only" href="#conteudo-principal">Pular para o conte?do principal</a>
   <header></header>
 
   <main id="conteudo-principal">
@@ -24,37 +24,47 @@
     </section>
 
     <section>
-      <div class="container">
-        <div class="grid grid-3">
-          <article class="card">
-            <h3>Gratuito</h3>
-            <p class="section-desc">Acesso aos módulos públicos, criação limitada e participação em grupos abertos.</p>
-            <div class="hero-cta" style="justify-content:flex-start">
-              <a class="btn btn--primary" href="#cadastro">Começar grátis</a>
-            </div>
-          </article>
-
-          <article class="card">
-            <h3>Essencial</h3>
-            <p class="section-desc">Uploads extras, organização avançada de cadernos e suporte prioritário.</p>
-            <div class="hero-cta" style="justify-content:flex-start">
-              <a class="btn btn--primary" href="#cadastro">Assinar</a>
-            </div>
-          </article>
-
-          <article class="card">
-            <h3>Equipe</h3>
-            <p class="section-desc">Para turmas ou centros acadêmicos que precisam de colaboração completa.</p>
-            <div class="hero-cta" style="justify-content:flex-start">
-              <a class="btn btn--primary" href="#cadastro">Falar com vendas</a>
-            </div>
-          </article>
+      <div class="container" style="display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;">
+        <div class="section-head" style="margin:0">
+          <h2>Planos disponíveis</h2>
         </div>
+        <button id="btnNovoPlano" class="btn btn-criar-plano" type="button">+ Novo plano</button>
       </div>
+      <div class="container">
+        <div id="planosGrid" class="grid grid-3" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <section id="drawerPlano" class="card" style="max-width:960px;margin:1rem auto;display:none;">
+      <div class="drawer-head" style="display:flex;justify-content:space-between;align-items:center;gap:.5rem;">
+        <h3 id="drawerTitulo" style="margin:0;">Novo plano</h3>
+        <button id="btnFecharDrawer" class="btn btn--ghost" type="button" aria-label="Fechar">?</button>
+      </div>
+      <form id="formPlano" style="display:grid;gap:12px;margin-top:12px;">
+        <input type="hidden" id="planoId">
+        <div class="field">
+          <label for="planoNome">Nome</label>
+          <input id="planoNome" required placeholder="Nome do plano">
+        </div>
+        <div class="field">
+          <label for="planoDescricao">Descrição</label>
+          <textarea id="planoDescricao" rows="3" required placeholder="Resumo dos benefícios"></textarea>
+        </div>
+        <div class="field">
+          <label for="planoPreco">Preço (R$)</label>
+          <input id="planoPreco" type="number" step="0.01" min="0" required placeholder="Ex.: 29.90">
+        </div>
+        <div class="form-actions" style="justify-content:flex-end;">
+          <button type="button" id="btnCancelar" class="btn">Cancelar</button>
+          <button type="submit" class="btn btn--primary">Salvar plano</button>
+        </div>
+        <div id="formErro" class="section-desc" style="color:#c0392b;"></div>
+      </form>
     </section>
   </main>
 
   <footer id="contato"></footer>
   <script src="/codigo/public/assets/js/layout.js" defer></script>
+  <script src="/codigo/public/assets/js/planos.js" defer></script>
 </body>
 </html>
