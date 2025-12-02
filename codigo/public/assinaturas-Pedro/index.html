@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tarefando — Planos de Assinatura</title>
+
+  <style>
+    :root {
+      --bg: #FBF6EE;
+      --paper: #FDF9F1;
+      --panel: #FFF9F2;
+      --ink: #2E2A26;
+      --muted: #6F6A63;
+      --brand: #B34C48;
+      --brand-2: #EBC172;
+      --sage: #9DBF9E;
+      --sky: #C7D9E7;
+      --clay: #D6A38A;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Poppins", sans-serif;
+      background-color: var(--bg);
+      color: var(--ink);
+    }
+
+    nav {
+      background-color: var(--panel);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 40px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    nav .logo {
+      font-weight: 700;
+      font-size: 1.5em;
+      color: var(--brand);
+      cursor: pointer;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 25px;
+      margin: 0;
+      padding: 0;
+    }
+
+    nav ul li {
+      cursor: pointer;
+      color: var(--ink);
+      transition: color 0.2s;
+    }
+
+    nav ul li:hover {
+      color: var(--brand);
+    }
+
+    header {
+      text-align: center;
+      margin-top: 40px;
+    }
+
+    .planos-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      padding: 40px;
+      max-width: 1000px;
+      margin: auto;
+    }
+
+    .plano-card {
+      background-color: var(--panel);
+      border-radius: 14px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      padding: 25px;
+      text-align: center;
+      transition: transform 0.2s ease;
+    }
+
+    .plano-card:hover {
+      transform: scale(1.03);
+    }
+
+    .plano-card h3 {
+      margin-bottom: 10px;
+      color: var(--brand);
+    }
+
+    .preco {
+      font-size: 1.6em;
+      color: var(--brand-2);
+      margin: 10px 0;
+    }
+
+    .beneficios {
+      list-style: none;
+      padding: 0;
+      margin-bottom: 20px;
+      color: var(--muted);
+    }
+
+    button {
+      background-color: var(--brand);
+      border: none;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    button:hover {
+      background-color: #922e22;
+    }
+
+    .cancelar-btn {
+      background-color: #999;
+    }
+
+    .cancelar-btn:hover {
+      background-color: #777;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="logo">📝 Tarefando</div>
+    <ul>
+      <li>Home</li>
+      <li>Faculdades</li>
+      <li>Cadernos</li>
+      <li>Disciplinas</li>
+      <li>Grupos</li>
+      <li>Assinaturas</li>
+      <li>FAQ</li>
+      <li><button onclick="toggleAdmin()">Admin</button></li>
+    </ul>
+  </nav>
+
+  <header>
+    <h1>Planos de Assinatura</h1>
+    <p>Escolha o plano que melhor se adapta às suas necessidades</p>
+  </header>
+
+  <div class="planos-container" id="planos"></div>
+
+  <section id="admin-section" style="display:none; max-width:1000px; margin:auto; padding:30px;">
+    <h2>Painel do Administrador</h2>
+    <table id="tabela-planos" border ="1" cellspacing="0" cellpadding="10" style="width:100%; margin-top:20px;">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nome</th>
+          <th>Preço</th>
+          <th>Benefícios</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <div class="form-container">
+      <h3>Editar / Atualizar Plano</h3>
+      <input type="hidden" id="id-plano">
+      <label>Nome:</label>
+      <input type="text" id="nome-plano">
+      <label>Preço:</label>
+      <input type="text" id="preco-plano">
+      <label>Benefícios (1 por linha):</label>
+      <textarea id="beneficios-plano" rows="4"></textarea>
+      <button onclick="salvarEdicao()">Salvar Alterações</button>
+    </div>
+
+    <div class="form-container">
+      <h3>Adicionar Novo Plano</h3>
+      <label>Nome:</label>
+      <input type="text" id="novo-nome">
+      <label>Preço:</label>
+      <input type="text" id="novo-preco">
+      <label>Benefícios (1 por linha):</label>
+      <textarea id="novo-beneficios" rows="4"></textarea>
+      <button onclick="adicionarPlano()">Adicionar Plano</button>
+    </div>
+  </section>
+
+  <script>
+    // === DADOS INICIAIS ===
+    let planos = JSON.parse(localStorage.getItem("planosTarefando")) || [
+      {
+        id: 1,
+        nome: "Plano Gratuito",
+        preco: "R$ 0 / mês",
+        beneficios: ["Acesso básico às tarefas", "Criação de até 5 tarefas", "Suporte por e-mail"]
+      },
+      {
+        id: 2,
+        nome: "Plano Plus",
+        preco: "R$ 19,90 / mês",
+        beneficios: ["Criação ilimitada de tarefas", "Organização por categorias", "Relatórios de produtividade", "Suporte prioritário"]
+      },
+      {
+        id: 3,
+        nome: "Plano Premium",
+        preco: "R$ 39,90 / mês",
+        beneficios: ["Todos os recursos do Plus", "Tarefas em equipe", "Backup em nuvem", "Atendimento personalizado"]
+      }
+    ];
+
+    let planoAtivo = localStorage.getItem("planoAtivo") || null;
+
+    const container = document.getElementById("planos");
+    const tbody = document.querySelector("#tabela-planos tbody");
+    const adminSection = document.getElementById("admin-section");
+
+    const idInput = document.getElementById("id-plano");
+    const nomeInput = document.getElementById("nome-plano");
+    const precoInput = document.getElementById("preco-plano");
+    const beneficiosInput = document.getElementById("beneficios-plano");
+
+    function renderizarPlanos() {
+      container.innerHTML = "";
+      planos.forEach(plano => {
+        const card = document.createElement("div");
+        card.className = "plano-card";
+
+        let buttonHTML = "";
+        if (planoAtivo === plano.nome) {
+          buttonHTML = `<button class="cancelar-btn" onclick="cancelarPlano()">Cancelar plano</button>`;
+        } else {
+          buttonHTML = `<button onclick="assinar('${plano.nome}')">Assinar</button>`;
+        }
+
+        card.innerHTML = `
+          <h3>${plano.nome}</h3>
+          <p class="preco">${plano.preco}</p>
+          <ul class="beneficios">
+            ${plano.beneficios.map(b => `<li>${b}</li>`).join("")}
+          </ul>
+          ${buttonHTML}
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function renderizarTabela() {
+      tbody.innerHTML = "";
+      planos.forEach(plano => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${plano.id}</td>
+          <td>${plano.nome}</td>
+          <td>${plano.preco}</td>
+          <td>${plano.beneficios.join("<br>")}</td>
+          <td>
+            <button onclick="editarPlano(${plano.id})">Editar</button>
+            <button onclick="excluirPlano(${plano.id})">Excluir</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+      localStorage.setItem("planosTarefando", JSON.stringify(planos));
+    }
+
+    function editarPlano(id) {
+      const plano = planos.find(p => p.id === id);
+      idInput.value = plano.id;
+      nomeInput.value = plano.nome;
+      precoInput.value = plano.preco;
+      beneficiosInput.value = plano.beneficios.join("\n");
+    }
+
+    function salvarEdicao() {
+      const id = Number(idInput.value);
+      const index = planos.findIndex(p => p.id === id);
+      if (index !== -1) {
+        planos[index].nome = nomeInput.value;
+        planos[index].preco = precoInput.value;
+        planos[index].beneficios = beneficiosInput.value.split("\n").map(b => b.trim()).filter(b => b);
+        renderizarPlanos();
+        renderizarTabela();
+        alert("Plano atualizado!");
+      }
+    }
+
+    function excluirPlano(id) {
+      planos = planos.filter(p => p.id !== id);
+      renderizarPlanos();
+      renderizarTabela();
+      alert("Plano excluído!");
+    }
+
+    function adicionarPlano() {
+      const nome = document.getElementById("novo-nome").value.trim();
+      const preco = document.getElementById("novo-preco").value.trim();
+      const beneficios = document.getElementById("novo-beneficios").value
+        .split("\n")
+        .map(b => b.trim())
+        .filter(b => b);
+
+      if (!nome || !preco || beneficios.length === 0) {
+        alert("Preencha todos os campos!");
+        return;
+      }
+
+      const novoPlano = {
+        id: Date.now(),
+        nome,
+        preco,
+        beneficios
+      };
+
+      planos.push(novoPlano);
+      renderizarPlanos();
+      renderizarTabela();
+      document.getElementById("novo-nome").value = "";
+      document.getElementById("novo-preco").value = "";
+      document.getElementById("novo-beneficios").value = "";
+      alert("Novo plano adicionado!");
+    }
+
+    function toggleAdmin() {
+      adminSection.style.display = adminSection.style.display === "none" ? "block" : "none";
+      renderizarTabela();
+    }
+
+    function assinar(nomePlano) {
+      planoAtivo = nomePlano;
+      localStorage.setItem("planoAtivo", nomePlano);
+      alert(`Você assinou o ${nomePlano}!`);
+      renderizarPlanos();
+    }
+
+    function cancelarPlano() {
+      const confirmar = confirm("Tem certeza de que deseja cancelar seu plano atual?");
+      if (confirmar) {
+        localStorage.removeItem("planoAtivo");
+        planoAtivo = null;
+        alert("Sua assinatura foi cancelada.");
+        renderizarPlanos();
+      }
+    }
+
+    renderizarPlanos();
+  </script>
+</body>
+</html>

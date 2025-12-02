@@ -1,19 +1,19 @@
-// Layout canǜnico para compartilhar header e footer
+// Layout canonico para compartilhar header e footer
 (function () {
   const BASE = "/codigo/public/";
   const menuItems = [
     { id: "home", label: "Home", href: `${BASE}index.html#home`, match: ["index.html"] },
-    { id: "faculdades", label: "Faculdades", href: `${BASE}Faculdades-Maria-Eduarda/faculdades.html`, match: ["faculdades.html", "faculdades-maria-eduarda"] },
-    { id: "cadernos", label: "Cadernos", href: `${BASE}Cadernos-Isabelle/cadernos.html`, match: ["cadernos.html", "cadernos-isabelle", "material.html"] },
-    { id: "disciplinas", label: "Disciplinas", href: `${BASE}Disciplinas-Divan/disciplinas.html`, match: ["disciplinas.html", "disciplinas-divan"] },
-    { id: "grupos", label: "Grupos", href: `${BASE}Grupo-Wagner/grupos.html`, match: ["grupos.html", "grupo.html", "grupo-wagner"] },
-    { id: "assinaturas", label: "Assinaturas", href: `${BASE}index.html#planos`, match: ["assinaturas.html", "#planos"] },
-    { id: "faq", label: "FAQ", href: `${BASE}faq-joao/faq.html`, match: ["faq.html", "faq-joao"] }
+    { id: "faculdades", label: "Faculdades", href: `${BASE}modules/faculdades/index.html`, match: ["modules/faculdades", "faculdades.html"] },
+    { id: "cadernos", label: "Cadernos", href: `${BASE}modules/cadernos/index.html`, match: ["modules/cadernos", "cadernos.html", "material.html"] },
+    { id: "disciplinas", label: "Disciplinas", href: `${BASE}modules/disciplinas/index.html`, match: ["modules/disciplinas", "disciplinas.html"] },
+    { id: "grupos", label: "Grupos", href: `${BASE}modules/grupos/index.html`, match: ["modules/grupos", "grupos.html", "grupo.html"] },
+    { id: "assinaturas", label: "Assinaturas", href: `${BASE}assinaturas.html`, match: ["assinaturas.html"] },
+    { id: "faq", label: "FAQ", href: `${BASE}faq.html`, match: ["faq.html"] }
   ];
 
   const headerTemplate = () => `
     <div class="container nav" style="display:flex;align-items:center;justify-content:space-between;gap:1rem;">
-      <a href="${BASE}index.html#home" class="brand" aria-label="Pǭgina inicial Tarefando">
+      <a href="${BASE}index.html#home" class="brand" aria-label="Pagina inicial Tarefando">
         <span class="brand-badge" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
             <path d="M6 4h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H9l-3 2V4z" stroke="white" stroke-opacity=".9" stroke-width="1.5"/>
@@ -47,12 +47,12 @@
         <p class="section-desc">Cadernos e estudos compartilhados.</p>
       </div>
       <div>
-        <p><a href="${BASE}index.html#planos">Pre��os e planos</a></p>
-        <p><a href="#">Termos</a> �� <a href="#">Privacidade</a></p>
+        <p><a href="${BASE}assinaturas.html">Precos e planos</a></p>
+        <p><a href="#">Termos</a> ? <a href="#">Privacidade</a></p>
       </div>
       <div>
         <p>Contato: <a href="mailto:contato@tarefando.app">contato@tarefando.app</a></p>
-        <p>�� <span id="y"></span> Tarefando</p>
+        <p>? <span id="y"></span> Tarefando</p>
       </div>
     </div>`;
 

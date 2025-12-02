@@ -87,7 +87,7 @@ function renderGroup(g){
   });
 
   // breadcrumb
-  $("#crumb").innerHTML = `<a href="/codigo/public/Grupo-Wagner/grupos.html">← Voltar para Grupos</a>` +
+  $("#crumb").innerHTML = `<a href="/codigo/public/modules/grupos/index.html">← Voltar para Grupos</a>` +
     (g.curso || g.faculdade ? ` · <span class="section-desc">${esc(g.curso||g.faculdade)}</span>` : "");
 }
 
@@ -108,7 +108,7 @@ function renderRelated(all, g){
   rel = Array.from(new Set(rel)).slice(0,3);
 
   box.innerHTML = rel.map(x => `
-    <a class="card" href="/codigo/public/Grupo-Wagner/grupo.html?id=${encodeURIComponent(x.id)}" style="display:flex;gap:.75rem">
+    <a class="card" href="/codigo/public/modules/grupos/grupo.html?id=${encodeURIComponent(x.id)}" style="display:flex;gap:.75rem">
       <div style="width:96px;height:64px;border-radius:10px;background:url('${esc(x.capa||`https://picsum.photos/200/120?seed=${x.id}`)}') center/cover no-repeat;border:1px solid var(--line)"></div>
       <div>
         <strong>${esc(x.titulo)}</strong>

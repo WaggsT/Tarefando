@@ -1,0 +1,22 @@
+{
+  "planos": [
+    {
+      "id": 1,
+      "nome": "Plano Gratuito",
+      "preco": "R$ 0 / mês",
+      "beneficios": ["Acesso básico às tarefas", "Criação de até 5 tarefas", "Suporte por e-mail"]
+    },
+    {
+      "id": 2,
+      "nome": "Plano Plus",
+      "preco": "R$ 19,90 / mês",
+      "beneficios": ["Criação ilimitada de tarefas", "Organização por categorias", "Acesso a relatórios de produtividade", "Suporte prioritário"]
+    },
+    {
+      "id": 3,
+      "nome": "Plano Premium",
+      "preco": "R$ 39,90 / mês",
+      "beneficios": ["Todos os recursos do Plus", "Tarefas compartilhadas em equipe", "Backup em nuvem", "Atendimento personalizado"]
+    }
+  ]
+}

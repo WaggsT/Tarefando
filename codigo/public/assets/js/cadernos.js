@@ -5,7 +5,7 @@
   'use strict';
 
   // Config
-  const JSON_PATH = '/codigo/public/data/cadernos.json';
+  const JSON_PATH = '/codigo/db/cadernos.json';
   const DISCIPLINAS = {};
   let allCadernos = [];
 

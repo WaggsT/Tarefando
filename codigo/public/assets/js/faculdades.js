@@ -1,5 +1,5 @@
 // Faculdades — página
-// Carrega do localStorage (se existir) ou de /codigo/public/data/faculdades.json
+// Carrega do localStorage (se existir) ou de /codigo/db/faculdades.json
 
 (function initCommon(){
   // ano no rodapé + popover de conta
@@ -20,7 +20,7 @@
 
 document.addEventListener('DOMContentLoaded', () => {
   // ====== CONFIG ======
-  const LOCAL_JSON = "/codigo/public/data/faculdades.json"; // <- bate com sua árvore
+  const LOCAL_JSON = "/codigo/db/faculdades.json"; // <- bate com sua árvore
   const STORAGE_ALL  = "tarefando_all_faculdades";
   const STORAGE_MY   = "tarefando_my_faculty_id";
   const STORAGE_OWN  = "tarefando_user_faculty_ids";
