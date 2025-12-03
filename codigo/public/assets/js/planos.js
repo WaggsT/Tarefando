@@ -1,7 +1,8 @@
 // CRUD de planos de assinatura (frontend-only)
 (function () {
   const STORAGE_KEY = "tarefando_planos";
-  const isAdmin = true; // simulado
+  const currentUser = typeof window.getCurrentUser === "function" ? window.getCurrentUser() : null;
+  const isAdmin = currentUser && currentUser.role === "admin";
 
   const planosGrid = document.getElementById("planosGrid");
   const btnNovo = document.getElementById("btnNovoPlano");
@@ -50,8 +51,8 @@
         <p class="section-desc plano-desc">${p.descricao || cardDescription(p.nome) || "Plano disponível para assinatura."}</p>
         ${isAdmin ? `
           <div class="form-actions" style="justify-content:flex-end;gap:.5rem;">
-            <button class="btn" data-edit="${p.id}">Editar</button>
-            <button class="btn btn--ghost" data-delete="${p.id}">Excluir</button>
+            <button class="btn btn-admin-only" data-edit="${p.id}">Editar</button>
+            <button class="btn btn--ghost btn-admin-only" data-delete="${p.id}">Excluir</button>
           </div>` : ``}
       </article>
     `).join("");
@@ -96,6 +97,7 @@
   let state = [];
 
   function openDrawer(editing = null) {
+    if (!isAdmin) return;
     if (!drawer) return;
     drawer.style.display = "block";
     drawerTitulo.textContent = editing ? "Editar plano" : "Novo plano";
@@ -120,20 +122,32 @@
   }
 
   function editPlano(id) {
+    if (!isAdmin) return;
     const plano = state.find(p => String(p.id) === String(id));
     if (!plano) return;
     openDrawer(plano);
   }
 
   function deletePlano(id) {
+    if (!isAdmin) return;
     if (!confirm("Deseja excluir este plano?")) return;
     state = state.filter(p => String(p.id) !== String(id));
     save(state);
     render(state);
   }
 
+  function hideAdminButtonsForVisitors() {
+    if (isAdmin) return;
+    document.querySelectorAll(".btn-admin-only").forEach(btn => {
+      btn.style.display = "none";
+      btn.setAttribute("aria-hidden", "true");
+      if ("disabled" in btn) btn.disabled = true;
+    });
+  }
+
   function handleSubmit(e) {
     e.preventDefault();
+    if (!isAdmin) return;
     formErro.textContent = "";
     const nome = campoNome.value.trim();
     const descricao = campoDesc.value.trim();
@@ -158,6 +172,7 @@
 
   async function init() {
     if (!planosGrid) return;
+    hideAdminButtonsForVisitors();
     state = await loadInitial();
     render(state);
     if (btnNovo) {

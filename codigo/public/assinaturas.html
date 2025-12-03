@@ -28,7 +28,7 @@
         <div class="section-head" style="margin:0">
           <h2>Planos disponíveis</h2>
         </div>
-        <button id="btnNovoPlano" class="btn btn-criar-plano" type="button">+ Novo plano</button>
+        <button id="btnNovoPlano" class="btn btn-criar-plano btn-admin-only" type="button">+ Novo plano</button>
       </div>
       <div class="container">
         <div id="planosGrid" class="grid grid-3" aria-live="polite"></div>
@@ -56,7 +56,7 @@
         </div>
         <div class="form-actions" style="justify-content:flex-end;">
           <button type="button" id="btnCancelar" class="btn">Cancelar</button>
-          <button type="submit" class="btn btn--primary">Salvar plano</button>
+          <button type="submit" class="btn btn--primary btn-admin-only">Salvar plano</button>
         </div>
         <div id="formErro" class="section-desc" style="color:#c0392b;"></div>
       </form>

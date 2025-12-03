@@ -1,6 +1,7 @@
 // Layout canonico para compartilhar header e footer
 (function () {
   const BASE = "/codigo/public/";
+  const SESSION_KEY = "tarefando_user";
   const menuItems = [
     { id: "home", label: "Home", href: `${BASE}index.html#home`, match: ["index.html"] },
     { id: "faculdades", label: "Faculdades", href: `${BASE}modules/faculdades/index.html`, match: ["modules/faculdades", "faculdades.html"] },
@@ -11,7 +12,23 @@
     { id: "faq", label: "FAQ", href: `${BASE}faq.html`, match: ["faq.html"] }
   ];
 
-  const headerTemplate = () => `
+  function getCurrentUser() {
+    try {
+      const raw = localStorage.getItem(SESSION_KEY);
+      return raw ? JSON.parse(raw) : null;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  function logout() {
+    try { localStorage.removeItem(SESSION_KEY); } catch (_) {}
+    window.location.href = `${BASE}modulos/login/index.html`;
+  }
+
+  window.getCurrentUser = getCurrentUser;
+
+  const headerTemplate = (user) => `
     <div class="container nav" style="display:flex;align-items:center;justify-content:space-between;gap:1rem;">
       <a id="brandLink" href="${BASE}index.html#home" class="brand" aria-label="P?gina inicial Tarefando">
         <span class="brand-text">Tarefando</span>
@@ -31,8 +48,15 @@
           </svg>
         </button>
         <div id="accountMenu" class="menu-popover" role="menu">
-          <a role="menuitem" class="menu-item" href="${BASE}modulos/login/index.html?mode=login">Entrar</a>
-          <a role="menuitem" class="menu-item highlight" href="${BASE}modulos/login/index.html?mode=signup">Cadastrar</a>
+          ${user ? `
+            <div id="accountStatus" class="menu-item" role="presentation">
+              Logado como ${user.email} ${user.role === "admin" ? "(Admin)" : ""}
+            </div>
+            <button id="logoutBtn" class="menu-item highlight" type="button">Sair</button>
+          ` : `
+            <a role="menuitem" class="menu-item" href="${BASE}modulos/login/index.html?mode=login">Entrar</a>
+            <a role="menuitem" class="menu-item highlight" href="${BASE}modulos/login/index.html?mode=signup">Cadastrar</a>
+          `}
         </div>
       </div>
     </div>`;
@@ -116,14 +140,25 @@
     });
   }
 
+  function wireAccountActions(user) {
+    const logoutBtn = document.getElementById("logoutBtn");
+    const status = document.getElementById("accountStatus");
+    if (status && user) {
+      status.textContent = `Logado como ${user.email}${user.role === "admin" ? " (Admin)" : ""}`;
+    }
+    if (logoutBtn) logoutBtn.addEventListener("click", logout);
+  }
+
   function applyLayout() {
+    const user = getCurrentUser();
     const header = document.querySelector("header");
-    if (header) header.innerHTML = headerTemplate();
+    if (header) header.innerHTML = headerTemplate(user);
     const footer = document.querySelector("footer");
     if (footer) footer.innerHTML = footerTemplate();
     setActiveMenu();
     wireAccountPopover();
     wireMenuToggle();
+    wireAccountActions(user);
     updateFooterYear();
   }
 

@@ -1,113 +1,39 @@
-// Login e Cadastro (frontend-only) - Tarefando
-// Observacao: senhas em texto puro apenas para fins didaticos (sem backend real).
-
+// Autenticacao front-end (demo) - Tarefando
+// Contas fixas: admin@tarefando.com.br (admin123) e usuario@tarefando.com.br (usuario123)
 (function () {
-  const KEY_USERS = "tarefando_usuarios";
-  const KEY_LOGGED = "tarefando_usuario_logado";
+  const USERS = [
+    { email: "admin@tarefando.com.br", password: "admin123", role: "admin" },
+    { email: "usuario@tarefando.com.br", password: "usuario123", role: "user" }
+  ];
+  const SESSION_KEY = "tarefando_user";
+  const HOME_URL = "/codigo/public/index.html";
+  const LOGIN_URL = "/codigo/public/modulos/login/index.html";
 
-  /* Helpers de storage */
-  function loadUsuarios() {
+  /* Storage */
+  function saveSession(user) {
+    if (!user) return null;
+    const payload = { email: user.email, role: user.role };
+    try { localStorage.setItem(SESSION_KEY, JSON.stringify(payload)); } catch (_) {}
+    return payload;
+  }
+  function clearSession() {
+    try { localStorage.removeItem(SESSION_KEY); } catch (_) {}
+  }
+  function getSessionUser() {
     try {
-      const raw = localStorage.getItem(KEY_USERS);
-      return raw ? JSON.parse(raw) : [];
+      const raw = localStorage.getItem(SESSION_KEY);
+      return raw ? JSON.parse(raw) : null;
     } catch (_) {
-      return [];
+      return null;
     }
   }
-  function saveUsuarios(list) {
-    try { localStorage.setItem(KEY_USERS, JSON.stringify(list || [])); } catch (_) {}
-  }
-  function saveUsuarioLogado(user) {
-    try { localStorage.setItem(KEY_LOGGED, JSON.stringify(user)); } catch (_) {}
-  }
+  window.tarefandoSessionKey = SESSION_KEY;
 
   /* UI helpers */
-  function showBlockError(el, msg) {
-    if (!el) return;
-    el.textContent = msg || "";
-  }
-  function clearBlockError(el) {
-    if (!el) return;
-    el.textContent = "";
-  }
-  function limparErros() {
-    ["loginErrors", "signupErrors", "cepErro"].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.textContent = "";
-    });
-  }
+  function showBlockError(el, msg) { if (el) el.textContent = msg || ""; }
+  function clearBlockError(el) { if (el) el.textContent = ""; }
+  function emailValido(email) { return /\S+@\S+\.\S+/.test(email); }
 
-  function emailValido(email) {
-    return /\S+@\S+\.\S+/.test(email);
-  }
-
-  /* CEP */
-  async function buscarEnderecoPorCep(cep) {
-    const limpo = String(cep || "").replace(/\D/g, "");
-    if (limpo.length !== 8) throw new Error("CEP invalido");
-    try {
-      const res = await fetch(`https://viacep.com.br/ws/${limpo}/json/`);
-      if (!res.ok) throw new Error("Erro ao buscar CEP");
-      const data = await res.json();
-      if (data.erro) throw new Error("CEP nao encontrado");
-      return data;
-    } catch (err) {
-      throw new Error("Nao foi possivel buscar o CEP. Preencha manualmente.");
-    }
-  }
-
-  function preencherCamposEndereco(data) {
-    const setVal = (id, val) => {
-      const el = document.getElementById(id);
-      if (el && val) el.value = val;
-    };
-    setVal("signupLogradouro", data.logradouro);
-    setVal("signupBairro", data.bairro);
-    setVal("signupCidade", data.localidade);
-    setVal("signupEstado", data.uf);
-  }
-
-  async function carregarUniversidades() {
-    const select = document.getElementById("faculdadeSelect");
-    if (!select) return;
-    select.innerHTML = '<option value="">Carregando faculdades...</option>';
-
-    const preencher = (nomes) => {
-      select.innerHTML = '<option value="">Selecione uma faculdade...</option>';
-      nomes.forEach((nome) => {
-        const opt = document.createElement("option");
-        opt.value = nome;
-        opt.textContent = nome;
-        select.appendChild(opt);
-      });
-    };
-
-    try {
-      const resp = await fetch("https://universities.hipolabs.com/search?country=Brazil");
-      if (!resp.ok) throw new Error("HTTP " + resp.status);
-      const data = await resp.json();
-      if (!Array.isArray(data) || data.length === 0) throw new Error("Resposta vazia da API");
-      const nomes = data.map(u => u.name).filter(Boolean).sort((a, b) => a.localeCompare(b, "pt-BR"));
-      preencher(nomes);
-      return;
-    } catch (err) {
-      console.warn("Falha na API externa de universidades, usando faculdades.json", err);
-    }
-
-    try {
-      const respLocal = await fetch("/codigo/db/faculdades.json");
-      if (!respLocal.ok) throw new Error("HTTP " + respLocal.status);
-      const faculdades = await respLocal.json();
-      if (!Array.isArray(faculdades) || faculdades.length === 0) throw new Error("faculdades.json vazio ou invalido");
-      const nomes = faculdades.map(f => f.name).filter(Boolean).sort((a, b) => a.localeCompare(b, "pt-BR"));
-      preencher(nomes);
-    } catch (err) {
-      console.error("Erro ao carregar faculdades do arquivo local:", err);
-      select.innerHTML = '<option value="">Nao foi possivel carregar</option>';
-    }
-  }
-
-  /* Troca de abas */
   function switchToLoginForm() {
     const tabLogin = document.getElementById("tabLogin");
     const tabSignup = document.getElementById("tabSignup");
@@ -117,7 +43,7 @@
     if (tabSignup) tabSignup.classList.remove("is-active");
     if (loginWrap) loginWrap.style.display = "block";
     if (signupWrap) signupWrap.style.display = "none";
-    limparErros();
+    clearBlockError(document.getElementById("loginErrors"));
     const email = document.getElementById("loginEmail");
     if (email) email.focus();
   }
@@ -131,9 +57,16 @@
     if (tabLogin) tabLogin.classList.remove("is-active");
     if (signupWrap) signupWrap.style.display = "block";
     if (loginWrap) loginWrap.style.display = "none";
-    limparErros();
+    clearBlockError(document.getElementById("signupErrors"));
     const nome = document.getElementById("signupNome");
     if (nome) nome.focus();
+  }
+
+  function redirectAfterLogin() {
+    const params = new URLSearchParams(location.search);
+    const redirect = params.get("redirect");
+    const referrer = document.referrer && document.referrer.includes("/codigo/public/") ? document.referrer : null;
+    window.location.href = redirect || referrer || HOME_URL;
   }
 
   /* Login */
@@ -151,170 +84,44 @@
       return;
     }
     if (!emailValido(email)) {
-      showBlockError(errorsEl, "Informe um e-mail válido.");
+      showBlockError(errorsEl, "Informe um e-mail valido.");
       return;
     }
 
-    const usuarios = loadUsuarios();
-    const found = usuarios.find(u => u.email?.toLowerCase() === email.toLowerCase() && u.senha === senha);
+    const found = USERS.find(u => u.email.toLowerCase() === email.toLowerCase() && u.password === senha);
     if (!found) {
       showBlockError(errorsEl, "E-mail ou senha incorretos.");
       return;
     }
-    saveUsuarioLogado({ id: found.id, nome: found.nome, email: found.email });
-    alert("Login realizado com sucesso");
+    saveSession(found);
+    redirectAfterLogin();
   }
 
-  /* Cadastro */
-  async function handleSignupSubmit(e) {
+  /* Cadastro desabilitado na versao demo */
+  function handleSignupSubmit(e) {
     e.preventDefault();
     const errorsEl = document.getElementById("signupErrors");
     clearBlockError(errorsEl);
-
-    const nome = document.getElementById("signupNome")?.value.trim();
     const email = document.getElementById("signupEmail")?.value.trim();
-    const telefone = document.getElementById("signupTelefone")?.value.trim();
-    const faculdade = document.getElementById("faculdadeSelect")?.value.trim();
-    const senha = document.getElementById("signupSenha")?.value.trim();
-    const senha2 = document.getElementById("signupSenha2")?.value.trim();
-    const cep = document.getElementById("signupCep")?.value.trim();
-    const logradouro = document.getElementById("signupLogradouro")?.value.trim();
-    const numero = document.getElementById("signupNumero")?.value.trim();
-    const complemento = document.getElementById("signupComplemento")?.value.trim();
-    const bairro = document.getElementById("signupBairro")?.value.trim();
-    const cidade = document.getElementById("signupCidade")?.value.trim();
-    const estado = document.getElementById("signupEstado")?.value.trim();
-    const cepErro = document.getElementById("cepErro");
-    showBlockError(cepErro, "");
-
-    if (!nome || !email || !senha || !senha2 || !cep || !faculdade) {
-      showBlockError(errorsEl, "Preencha os campos obrigatórios.");
-      return;
-    }
-    if (!emailValido(email)) {
-      showBlockError(errorsEl, "E-mail inválido.");
-      return;
-    }
-    if (senha.length < 6) {
-      showBlockError(errorsEl, "A senha precisa ter ao menos 6 caracteres.");
-      return;
-    }
-    if (senha !== senha2) {
-      showBlockError(errorsEl, "As senhas não coincidem.");
-      return;
-    }
-    if (!/^\d{8}$/.test(cep)) {
-      showBlockError(cepErro, "CEP deve ter 8 números.");
-      return;
-    }
-
-    const usuarios = loadUsuarios();
-    if (usuarios.some(u => u.email?.toLowerCase() === email.toLowerCase())) {
-      showBlockError(errorsEl, "Já existe uma conta com este e-mail.");
-      return;
-    }
-
-    try {
-      const data = await buscarEnderecoPorCep(cep);
-      preencherCamposEndereco(data);
-    } catch (err) {
-      showBlockError(cepErro, err.message || "CEP inválido. Preencha manualmente.");
-    }
-
-    const novo = {
-      id: Date.now(),
-      nome,
-      email,
-      senha, // Em producao, criptografar antes de salvar.
-      telefone,
-      faculdade,
-      endereco: { cep, logradouro, numero, complemento, bairro, cidade, estado }
-    };
-    usuarios.push(novo);
-    saveUsuarios(usuarios);
-    saveUsuarioLogado({ id: novo.id, nome: novo.nome, email: novo.email });
-    alert("Conta criada com sucesso!");
+    showBlockError(errorsEl, "Cadastros estao desativados nesta versao. Use uma das contas demo acima.");
     switchToLoginForm();
-    const emailEl = document.getElementById("loginEmail");
-    const senhaEl = document.getElementById("loginSenha");
-    if (emailEl) emailEl.value = email;
-    if (senhaEl) senhaEl.value = senha;
+    const loginEmail = document.getElementById("loginEmail");
+    if (loginEmail && email) loginEmail.value = email;
   }
 
-  /* CEP blur/listener */
-  function setupCepListener() {
-    const cepEl = document.getElementById("signupCep");
-    const cepErro = document.getElementById("cepErro");
-    if (!cepEl) return;
-    const handler = async () => {
-      showBlockError(cepErro, "");
-      const val = cepEl.value.trim();
-      if (!/^\d{8}$/.test(val)) return;
-      try {
-        const data = await buscarEnderecoPorCep(val);
-        preencherCamposEndereco(data);
-      } catch (err) {
-        showBlockError(cepErro, err.message || "CEP inválido. Preencha manualmente.");
-      }
-    };
-    cepEl.addEventListener("blur", handler);
-    cepEl.addEventListener("input", () => {
-      if (cepEl.value.replace(/\D/g, "").length === 8) handler();
-    });
+  /* Social buttons apenas informam uso de contas fixas */
+  function wireSocialButtons() {
+    const msg = "Use as contas fixas: admin@tarefando.com.br (admin123) ou usuario@tarefando.com.br (usuario123).";
+    const btnGoogle = document.getElementById("btnGoogle");
+    const btnMicrosoft = document.getElementById("btnMicrosoft");
+    if (btnGoogle) btnGoogle.addEventListener("click", () => alert(msg));
+    if (btnMicrosoft) btnMicrosoft.addEventListener("click", () => alert(msg));
   }
 
-  /* Google Identity Services */
-  function initGoogleLogin() {
-    const btn = document.getElementById("btnGoogle");
-    if (!window.google || !window.google.accounts || !window.google.accounts.id) {
-      if (btn) { btn.disabled = true; btn.title = "Login com Google indisponível no momento"; }
-      return;
-    }
-    window.google.accounts.id.initialize({
-      client_id: "COLOQUE_SEU_CLIENT_ID_GOOGLE_AQUI", // TODO: substituir pelo client_id real
-      callback: onGoogleLoginSuccess
-    });
-    if (btn) btn.addEventListener("click", () => window.google.accounts.id.prompt());
-  }
-
-  function onGoogleLoginSuccess(response) {
-    console.log("Google login success", response);
-    const dummyUser = { id: Date.now(), nome: "Usuario Google", email: "google-user@example.com", provider: "google" };
-    saveUsuarioLogado(dummyUser);
-    alert("Login via Google simulado (configure o client_id para usar de verdade).");
-  }
-
-  /* Microsoft / MSAL */
-  let msalInstance = null;
-  function initMicrosoftLogin() {
-    const btn = document.getElementById("btnMicrosoft");
-    if (!window.msal || !window.msal.PublicClientApplication) {
-      if (btn) { btn.disabled = true; btn.title = "Login com Microsoft indisponível no momento"; }
-      return;
-    }
-    msalInstance = new msal.PublicClientApplication({
-      auth: {
-        clientId: "COLOQUE_SEU_CLIENT_ID_MICROSOFT_AQUI", // TODO: substituir pelo clientId real
-        redirectUri: window.location.origin + "/codigo/public/modulos/login/index.html"
-      },
-      cache: { cacheLocation: "localStorage", storeAuthStateInCookie: false }
-    });
-    if (btn) btn.addEventListener("click", loginWithMicrosoft);
-  }
-
-  async function loginWithMicrosoft() {
-    if (!msalInstance) return;
-    const loginRequest = { scopes: ["User.Read"] };
-    try {
-      const res = await msalInstance.loginPopup(loginRequest);
-      console.log("Microsoft login success", res);
-      const account = res.account;
-      const user = { id: account.localAccountId, nome: account.name || "Usuario Microsoft", email: account.username, provider: "microsoft" };
-      saveUsuarioLogado(user);
-      alert("Login via Microsoft simulado (configure clientId/redirectUri para usar de verdade).");
-    } catch (err) {
-      console.error("Microsoft login error", err);
-      alert("Nao foi possivel entrar com Microsoft. Verifique as configuracoes.");
+  function hydrateSignupForm() {
+    const faculdadeSelect = document.getElementById("faculdadeSelect");
+    if (faculdadeSelect) {
+      faculdadeSelect.innerHTML = '<option value="">Cadastros desativados (use contas demo)</option>';
     }
   }
 
@@ -329,14 +136,26 @@
     if (loginForm) loginForm.addEventListener("submit", handleLoginSubmit);
     if (signupForm) signupForm.addEventListener("submit", handleSignupSubmit);
 
-    setupCepListener();
-    carregarUniversidades();
+    hydrateSignupForm();
+    wireSocialButtons();
 
     const mode = new URLSearchParams(location.search).get("mode");
     if (mode === "signup") switchToSignupForm(); else switchToLoginForm();
 
-    initGoogleLogin();
-    initMicrosoftLogin();
+    const current = getSessionUser();
+    if (current) {
+      const status = document.getElementById("loginErrors");
+      showBlockError(status, `Voce ja esta logado como ${current.email}.`);
+    }
+  }
+
+  /* Logout helper para botao na pagina de login */
+  const logoutBtn = document.getElementById("btnLogout");
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", () => {
+      clearSession();
+      window.location.href = LOGIN_URL;
+    });
   }
 
   if (document.readyState === "loading") {
