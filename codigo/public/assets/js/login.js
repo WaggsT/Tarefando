@@ -1,4 +1,4 @@
-// Autenticacao front-end (demo) - Tarefando
+﻿// Autenticacao front-end (demo) - Tarefando
 // Contas fixas: admin@tarefando.com.br (admin123) e usuario@tarefando.com.br (usuario123)
 (function () {
   const USERS = [
@@ -119,13 +119,6 @@
     if (btnMicrosoft) btnMicrosoft.addEventListener("click", () => alert(msg));
   }
 
-  function hydrateSignupForm() {
-    const faculdadeSelect = document.getElementById("faculdadeSelect");
-    if (faculdadeSelect) {
-      faculdadeSelect.innerHTML = '<option value="">Cadastros desativados (use contas demo)</option>';
-    }
-  }
-
   /* CEP lookup (ViaCEP) */
   function sanitizeCep(value) {
     return String(value || "").replace(/\D/g, "").slice(0, 8);
@@ -167,13 +160,13 @@
       const data = await resp.json();
       if (data.erro) {
         clearAddressFields();
-        setCepError("Não foi possível buscar o endereço. Confira o CEP digitado.");
+        setCepError("Nao foi possivel buscar o endereco. Confira o CEP digitado.");
         return;
       }
       fillAddressFields(data);
     } catch (error) {
       clearAddressFields();
-      setCepError("Não foi possível buscar o endereço. Confira o CEP digitado.");
+      setCepError("Nao foi possivel buscar o endereco. Confira o CEP digitado.");
       console.error("Falha ao buscar CEP:", error);
     }
   }
@@ -199,7 +192,7 @@
         buscarCep(clean);
       } else if (clean.length > 0) {
         clearAddressFields();
-        setCepError("Informe um CEP com 8 dígitos.");
+        setCepError("Informe um CEP com 8 digitos.");
       } else {
         setCepError("");
         clearAddressFields();
@@ -221,7 +214,6 @@
     if (loginForm) loginForm.addEventListener("submit", handleLoginSubmit);
     if (signupForm) signupForm.addEventListener("submit", handleSignupSubmit);
 
-    hydrateSignupForm();
     wireSocialButtons();
     wireCepLookup();
 
@@ -254,3 +246,5 @@
     initLoginPage();
   }
 })();
+
+
