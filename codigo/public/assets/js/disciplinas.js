@@ -59,7 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
       mapFaculdades = {};
       faculdades.forEach((f) => {
         const id = f?.id;
-        const nome = f?.name || f?.nome || "Sem nome";
+        const nome = f?.nome || f?.name || "Sem nome";
         if (id == null) return;
         mapFaculdades[String(id)] = nome;
         const opt = document.createElement("option");
@@ -207,6 +207,8 @@ document.addEventListener("DOMContentLoaded", () => {
     btnDir.addEventListener("click", () => scroll(200));
   }
 
-  carregarFaculdades();
-  carregarDisciplinas();
+  (async function init() {
+    await carregarFaculdades();
+    await carregarDisciplinas();
+  })();
 });
