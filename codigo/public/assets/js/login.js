@@ -6,6 +6,7 @@
     { email: "usuario@tarefando.com.br", password: "usuario123", role: "user" }
   ];
   const SESSION_KEY = "tarefando_user";
+  const VIACEP_BASE = "https://viacep.com.br/ws";
   const HOME_URL = "/codigo/public/index.html";
   const LOGIN_URL = "/codigo/public/modulos/login/index.html";
 
@@ -125,6 +126,90 @@
     }
   }
 
+  /* CEP lookup (ViaCEP) */
+  function sanitizeCep(value) {
+    return String(value || "").replace(/\D/g, "").slice(0, 8);
+  }
+
+  function setCepError(msg) {
+    const el = document.getElementById("cepErro");
+    if (el) el.textContent = msg || "";
+  }
+
+  function clearAddressFields() {
+    ["signupLogradouro", "signupBairro", "signupCidade", "signupEstado"].forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) el.value = "";
+    });
+  }
+
+  function fillAddressFields(data) {
+    const map = [
+      ["signupLogradouro", data?.logradouro],
+      ["signupBairro", data?.bairro],
+      ["signupCidade", data?.localidade],
+      ["signupEstado", data?.uf]
+    ];
+    map.forEach(([id, value]) => {
+      const el = document.getElementById(id);
+      if (el) el.value = value || "";
+    });
+  }
+
+  async function buscarCep(cep) {
+    const normalized = sanitizeCep(cep);
+    if (normalized.length !== 8) return;
+
+    try {
+      setCepError("");
+      const resp = await fetch(`${VIACEP_BASE}/${normalized}/json/`);
+      if (!resp.ok) throw new Error("Erro na consulta do CEP");
+      const data = await resp.json();
+      if (data.erro) {
+        clearAddressFields();
+        setCepError("Não foi possível buscar o endereço. Confira o CEP digitado.");
+        return;
+      }
+      fillAddressFields(data);
+    } catch (error) {
+      clearAddressFields();
+      setCepError("Não foi possível buscar o endereço. Confira o CEP digitado.");
+      console.error("Falha ao buscar CEP:", error);
+    }
+  }
+
+  function wireCepLookup() {
+    const cepInput = document.getElementById("signupCep");
+    if (!cepInput) return;
+
+    const handleInput = () => {
+      const clean = sanitizeCep(cepInput.value);
+      if (cepInput.value !== clean) cepInput.value = clean;
+      if (clean.length === 8) {
+        buscarCep(clean);
+      } else {
+        setCepError("");
+      }
+    };
+
+    const handleBlur = () => {
+      const clean = sanitizeCep(cepInput.value);
+      cepInput.value = clean;
+      if (clean.length === 8) {
+        buscarCep(clean);
+      } else if (clean.length > 0) {
+        clearAddressFields();
+        setCepError("Informe um CEP com 8 dígitos.");
+      } else {
+        setCepError("");
+        clearAddressFields();
+      }
+    };
+
+    cepInput.addEventListener("input", handleInput);
+    cepInput.addEventListener("blur", handleBlur);
+  }
+
   function initLoginPage() {
     const tabLogin = document.getElementById("tabLogin");
     const tabSignup = document.getElementById("tabSignup");
@@ -138,6 +223,7 @@
 
     hydrateSignupForm();
     wireSocialButtons();
+    wireCepLookup();
 
     const params = new URLSearchParams(location.search);
     const mode = params.get("mode");

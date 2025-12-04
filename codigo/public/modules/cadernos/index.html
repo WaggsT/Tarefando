@@ -8,8 +8,6 @@
   <link rel="stylesheet" href="/codigo/public/assets/css/style.css?v=1">
 
   <style>
-    .btn-excluir { background-color: #C04040; color: #fff; border: none; padding: 6px 12px; border-radius: 25px; font-size: .85rem; font-weight: 700; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,.2) }
-    .btn-excluir:hover { background:#A03030 }
     .card-caderno{ display:flex; flex-direction:column; height:100% }
     .card-caderno h3{ margin-top:0 }
     .card-caderno .group-body{ flex:1; display:flex; flex-direction:column; gap:.6rem }
@@ -25,11 +23,6 @@
     label{ display:block; margin-top:15px; font-weight:700; color:#555; font-size:.95em }
     input[type="text"], select, textarea{ width:100%; padding:10px; margin-top:5px; border:1px solid #ccc; border-radius:12px; box-sizing:border-box }
     .actions{ margin-top:30px; display:flex; justify-content:flex-end; gap:10px }
-    .btn-cancelar{ background:#f0f0f0; color:#333; padding:10px 15px; border:1px solid #ccc; border-radius:999px; cursor:pointer }
-    .btn-salvar{ background:#D66D5B; color:#fff; padding:10px 15px; border:none; border-radius:999px; cursor:pointer }
-    .btn-salvar:hover{ background:#c45d4c }
-    .btn-novo-caderno{ background:#D66D5B; color:#fff; padding:10px 20px; border:none; border-radius:25px; cursor:pointer; font-size:16px; font-weight:700; box-shadow:0 4px 6px rgba(0,0,0,.15) }
-    .btn-novo-caderno:hover{ background:#c45d4c }
     @media (max-width:1100px){ .grid-4{grid-template-columns:repeat(3,1fr)} }
     @media (max-width:900px){ .grid-4{grid-template-columns:repeat(2,1fr)} }
     @media (max-width:560px){ .grid-4{grid-template-columns:1fr} }
@@ -58,8 +51,8 @@
           <input type="file" id="uploadFile" name="uploadFile" style="display:none">
         </div>
         <div class="actions">
-          <button type="button" class="btn-cancelar" id="btnCancelar">Cancelar</button>
-          <button type="submit" class="btn-salvar">Cadastrar e Continuar</button>
+          <button type="button" class="btn btn--ghost btn--sm" id="btnCancelar">Cancelar</button>
+          <button type="submit" class="btn btn--primary btn--sm btn--raised">Cadastrar e Continuar</button>
         </div>
       </form>
     </div>
@@ -76,7 +69,7 @@
         <div class="toolbar card" style="padding:.7rem">
           <input id="q" type="search" placeholder="Buscar cadernos..." aria-label="Pesquisar" style="flex:1;min-width:220px;padding:.65rem .85rem;border-radius:12px;border:1px solid var(--line);background:#fff8;color:var(--ink)">
           <div class="spacer"></div>
-          <button id="btnAbrirModal" class="btn-novo-caderno" type="button">Novo Caderno</button>
+          <button id="btnAbrirModal" class="btn btn--primary btn--lg btn--raised" type="button">Novo Caderno</button>
         </div>
       </div>
     </section>

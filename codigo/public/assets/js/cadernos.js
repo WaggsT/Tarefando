@@ -44,15 +44,15 @@
         <div class="group-body">
           <div class="card-header-actions">
             <h3>${esc(c.name)}</h3>
-            <button class="btn-excluir" data-id="${c.id}" onclick="excluirCaderno(${c.id})">Excluir</button>
+            <button class="btn btn--danger btn--sm" type="button" data-id="${c.id}" onclick="excluirCaderno(${c.id})">Excluir</button>
           </div>
           <p class="group-desc">${esc(c.descricao || '')}</p>
           <div class="caderno-tags group-tags">
             ${tags.map((t) => `<span class="tag">${esc(t)}</span>`).join('')}
           </div>
           <div class="group-actions">
-            <a class="btn cta" href="/codigo/public/material.html?id=${materialSlug}">Ver Material</a>
-            <button class="btn btn--ghost" onclick="abrirModalParaEditar(${c.id})">Editar</button>
+            <a class="btn cta btn--sm btn--raised" href="/codigo/public/material.html?id=${materialSlug}">Ver Material</a>
+            <button class="btn btn--ghost btn--sm" type="button" onclick="abrirModalParaEditar(${c.id})">Editar</button>
           </div>
         </div>
       </article>`;
