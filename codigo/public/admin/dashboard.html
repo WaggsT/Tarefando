@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Painel do Administrador - Tarefando</title>
+  <meta name="description" content="Visão geral do Tarefando para administradores.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/codigo/public/assets/css/style.css?v=1">
+  <link rel="icon" href="/codigo/public/assets/images/logo-tarefando.png" type="image/png">
+  <style>
+    .admin-grid{display:grid;gap:1.25rem;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));}
+    .admin-card{padding:1.25rem;border-radius:var(--radius,16px);background:var(--panel,#fff);border:1px solid var(--line,#e4e0da);box-shadow:var(--shadow,0 12px 30px rgba(0,0,0,.08));display:grid;gap:.35rem;}
+    .admin-card h3{margin:0;}
+    .admin-card .number{font-size:2rem;font-weight:800;}
+    .admin-actions{display:flex;flex-wrap:wrap;gap:.75rem;}
+  </style>
+</head>
+<body data-active-menu="assinaturas">
+  <a class="sr-only" href="#conteudo-principal">Pular para o conteúdo principal</a>
+  <header></header>
+
+  <main id="conteudo-principal">
+    <section class="hero hero--small">
+      <div class="container">
+        <h1>Painel do Administrador</h1>
+        <p class="section-desc">Visão geral do Tarefando (dados locais, ambiente de testes).</p>
+      </div>
+    </section>
+
+    <section class="container" style="display:grid;gap:1.5rem;">
+      <div>
+        <h2>Resumo rápido</h2>
+        <p class="section-desc">Totais carregados de localStorage ou JSON local.</p>
+        <div class="admin-grid">
+          <article class="admin-card">
+            <h3>Faculdades</h3>
+            <div id="countFaculdades" class="number">—</div>
+            <p class="section-desc">Fonte: faculdades.json</p>
+          </article>
+          <article class="admin-card">
+            <h3>Disciplinas</h3>
+            <div id="countDisciplinas" class="number">—</div>
+            <p class="section-desc">Fonte: localStorage ou disciplinas.json</p>
+          </article>
+          <article class="admin-card">
+            <h3>Grupos</h3>
+            <div id="countGrupos" class="number">—</div>
+            <p class="section-desc">Fonte: grupos.json</p>
+          </article>
+          <article class="admin-card">
+            <h3>Planos</h3>
+            <div id="countPlanos" class="number">—</div>
+            <p class="section-desc">Fonte: localStorage ou planos.json</p>
+          </article>
+          <article class="admin-card">
+            <h3>Cadernos</h3>
+            <div id="countCadernos" class="number">—</div>
+            <p class="section-desc">Fonte: cadernos.json</p>
+          </article>
+        </div>
+      </div>
+
+      <div>
+        <h2>Atalhos do administrador</h2>
+        <div class="admin-actions">
+          <a class="btn btn--primary" href="/codigo/public/assinaturas.html">Gerenciar Assinaturas</a>
+          <a class="btn" href="/codigo/public/modules/disciplinas/index.html">Disciplinas</a>
+          <a class="btn" href="/codigo/public/modules/faculdades/index.html">Faculdades</a>
+          <a class="btn" href="/codigo/public/modules/grupos/index.html">Grupos</a>
+        </div>
+      </div>
+
+      <div class="card" style="padding:1.25rem;">
+        <h2 style="margin-top:0;">Sessão atual</h2>
+        <p class="section-desc" id="sessaoEmail">Logado como: —</p>
+        <p class="section-desc" id="sessaoRole">Papel: —</p>
+      </div>
+    </section>
+  </main>
+
+  <footer id="contato"></footer>
+  <script src="/codigo/public/assets/js/layout.js" defer></script>
+  <script src="/codigo/public/assets/js/admin-dashboard.js" defer></script>
+</body>
+</html>

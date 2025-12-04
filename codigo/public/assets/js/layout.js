@@ -52,6 +52,7 @@
             <div id="accountStatus" class="menu-item" role="presentation">
               Logado como ${user.email} ${user.role === "admin" ? "(Admin)" : ""}
             </div>
+            ${user.role === "admin" ? `<button class="menu-item btnD" type="button" onclick="location.href='${BASE}admin/dashboard.html'">Dashboard</button>` : ""}
             <button id="logoutBtn" class="menu-item highlight" type="button">Sair</button>
           ` : `
             <a role="menuitem" class="menu-item" href="${BASE}modulos/login/index.html?mode=login">Entrar</a>
