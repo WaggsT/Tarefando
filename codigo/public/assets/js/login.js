@@ -139,8 +139,12 @@
     hydrateSignupForm();
     wireSocialButtons();
 
-    const mode = new URLSearchParams(location.search).get("mode");
-    if (mode === "signup") switchToSignupForm(); else switchToLoginForm();
+    const params = new URLSearchParams(location.search);
+    const mode = params.get("mode");
+    const tab = params.get("tab");
+    const goSignup = mode === "signup" || tab === "cadastro" || tab === "signup";
+    const goLogin = tab === "login";
+    if (goSignup) switchToSignupForm(); else if (goLogin) switchToLoginForm(); else switchToLoginForm();
 
     const current = getSessionUser();
     if (current) {
