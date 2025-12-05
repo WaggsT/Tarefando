@@ -1,0 +1,48 @@
+{
+  "grupos": [
+    {
+      "id": "1",
+      "titulo": "Grupo 1",
+      "descricao": "Teoria + listas resolvidas.",
+      "membros": 99,
+      "posts_semana": 14,
+      "tags": [
+        "Sistema de Informação"
+      ],
+      "capa": "https://picsum.photos/640/360?10"
+    },
+    {
+      "id": "3",
+      "titulo": "Grupo 3",
+      "descricao": "Listas, monitorias e resumos.",
+      "membros": 80,
+      "posts_semana": 6,
+      "tags": [
+        "Cálculo"
+      ],
+      "capa": "https://picsum.photos/640/360?39"
+    },
+    {
+      "id": "4",
+      "titulo": "Grupo 4",
+      "descricao": "Debates e mapas mentais colaborativos.",
+      "membros": 10,
+      "posts_semana": 3,
+      "tags": [
+        "Direito Constitucional"
+      ],
+      "capa": "https://picsum.photos/640/360?59"
+    },
+    {
+      "id": "5",
+      "titulo": "Grupo 5",
+      "descricao": "Material de apoio e projetos.",
+      "membros": 250,
+      "posts_semana": 7,
+      "tags": [
+        "Sistema de Informação"
+      ],
+      "capa": "https://picsum.photos/640/360?14"
+    }
+  ]
+}
