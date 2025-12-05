@@ -1,187 +1,98 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="pt-br">
-
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Grupos de Estudos — Tarefando</title>
   <meta name="description" content="Crie e participe de grupos de estudos por faculdade, curso e disciplina.">
 
-  <!-- Caminho absoluto para o CSS global -->
   <link rel="stylesheet" href="../../assets/css/style.css?v=1">
-
-  <!-- Estilos pontuais desta página -->
-  <style>
-    .drawer {
-      position: fixed;
-      left: 0;
-      right: 0;
-      bottom: -100%;
-      background: var(--panel);
-      border-top: 1px solid var(--line);
-      box-shadow: 0 -20px 40px rgba(0, 0, 0, .08);
-      border-radius: 20px 20px 0 0;
-      padding: 1rem;
-      transition: bottom .2s ease;
-      z-index: 60
-    }
-
-    .drawer.is-open {
-      bottom: 0
-    }
-
-    .drawer-head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: .75rem
-    }
-
-    .drawer .close {
-      border: none;
-      background: transparent;
-      font-size: 1.5rem;
-      line-height: 1
-    }
-
-    .toolbar {
-      display: flex;
-      gap: .5rem;
-      flex-wrap: wrap;
-      align-items: center
-    }
-
-    .toolbar .spacer {
-      flex: 1
-    }
-
-    .field {
-      display: flex;
-      flex-direction: column;
-      gap: .35rem
-    }
-
-    .field input,
-    .field textarea {
-      padding: .7rem .9rem;
-      border-radius: 12px;
-      border: 1px solid var(--line);
-      background: #fff8;
-      color: var(--ink)
-    }
-
-    textarea {
-      min-height: 110px;
-      resize: vertical
-    }
-
-    .my-groups .card {
-      padding: 0;
-      overflow: hidden
-    }
-
-    .my-groups .group-body {
-      padding: .9rem
-    }
-
-    @media (max-width:1100px) {
-      .grid-4 {
-        grid-template-columns: repeat(3, 1fr)
-      }
-    }
-
-    @media (max-width:900px) {
-      .grid-4 {
-        grid-template-columns: repeat(2, 1fr)
-      }
-    }
-
-    @media (max-width:560px) {
-      .grid-4 {
-        grid-template-columns: 1fr
-      }
-    }
-  </style>
   <link rel="icon" href="../../assets/images/logo-tarefando.png" type="image/png">
-</head>
 
+  <style>
+    .drawer{
+      position:fixed;left:0;right:0;bottom:-100%;background:var(--panel);
+      border-top:1px solid var(--line);box-shadow:0 -20px 40px rgba(0,0,0,.08);
+      border-radius:20px 20px 0 0;padding:1rem;transition:bottom .2s ease;z-index:60
+    }
+    .drawer.is-open{bottom:0}
+    .drawer-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem}
+    .drawer .close{border:none;background:transparent;font-size:1.5rem;line-height:1}
+    .toolbar{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center}
+    .toolbar .spacer{flex:1}
+    .field{display:flex;flex-direction:column;gap:.35rem}
+    .field input,.field textarea{
+      padding:.7rem .9rem;border-radius:12px;border:1px solid var(--line);
+      background:#fff8;color:var(--ink)
+    }
+    textarea{min-height:110px;resize:vertical}
+    .my-groups .card{padding:0;overflow:hidden}
+    .my-groups .group-body{padding:.9rem}
+    @media (max-width:1100px){.grid-4{grid-template-columns:repeat(3,1fr)}}
+    @media (max-width:900px){.grid-4{grid-template-columns:repeat(2,1fr)}}
+    @media (max-width:560px){.grid-4{grid-template-columns:1fr}}
+  </style>
+</head>
 <body>
   <header></header>
 
   <main>
-    <!-- Título + busca + criar -->
     <section class="hero" style="padding:40px 0 18px">
       <div class="container">
         <h1 style="margin:0 0 .4rem">Grupos de Estudos</h1>
-        <p class="section-desc" style="margin:0 0 1rem">Crie seu grupo e participe de comunidades da sua faculdade e
-          curso.</p>
+        <p class="section-desc" style="margin:0 0 1rem">Crie seu grupo e participe de comunidades da sua faculdade e curso.</p>
 
         <div class="toolbar card" style="padding:.7rem">
-          <input id="q" type="search" placeholder="Buscar grupos..." aria-label="Pesquisar"
+          <input id="searchGrupos" type="search" placeholder="Buscar grupos..." aria-label="Pesquisar"
             style="flex:1;min-width:220px;padding:.65rem .85rem;border-radius:12px;border:1px solid var(--line);background:#fff8;color:var(--ink)">
           <div class="spacer"></div>
-          <button id="openCreate" class="cta" type="button">+ Criar grupo</button>
+          <button id="btnCriarGrupo" class="cta" type="button">+ Criar grupo</button>
         </div>
       </div>
     </section>
 
-    <!-- Meus grupos -->
     <section>
       <div class="container">
-        <div class="section-head">
-          <h2>Meus grupos</h2>
-        </div>
-        <div id="myGrid" class="grid grid-4 my-groups"></div>
-        <p id="myEmpty" class="section-desc" style="display:none;margin-top:.5rem">
-          Você ainda não participa de nenhum grupo — use “+ Criar grupo” ou participe de um abaixo.
+        <div class="section-head"><h2>Meus grupos</h2></div>
+        <div id="meusGruposList" class="grid grid-4 my-groups"></div>
+        <p id="meusGruposEmpty" class="section-desc" style="display:none;margin-top:.5rem">
+          Você ainda não participa de nenhum grupo. Crie um novo grupo acima.
         </p>
       </div>
     </section>
 
-    <!-- Drawer de criação -->
-    <div id="drawer" class="drawer" aria-hidden="true" aria-labelledby="drawerTitle">
+    <div id="grupoDrawer" class="drawer" aria-hidden="true" aria-labelledby="drawerTitle">
       <div class="drawer-head">
         <h3 id="drawerTitle" style="margin:0">Criar grupo</h3>
         <button class="close" type="button" aria-label="Fechar" id="closeDrawer">×</button>
       </div>
-      <form id="createFormMobile">
-        <div class="field"><label for="mtitulo">Nome do grupo</label><input id="mtitulo" required></div>
-        <div class="field"><label for="mfaculdade">Instituição</label><input id="mfaculdade"></div>
-        <div class="field"><label for="mcurso">Curso</label><input id="mcurso"></div>
-        <div class="field"><label for="mdescricao">Detalhes</label><textarea id="mdescricao" required></textarea></div>
-        <div class="field"><label for="mtags">Tags (vírgula)</label><input id="mtags" placeholder="ADS, Algoritmos">
-        </div>
-        <div class="field"><label for="mcapa">URL da capa</label><input id="mcapa" placeholder="https://..."></div>
+      <form id="grupoForm">
+        <input type="hidden" id="grupo_id">
+        <div class="field"><label for="grupo_nome">Nome do grupo</label><input id="grupo_nome" required></div>
+        <div class="field"><label for="grupo_faculdade">Faculdade / Curso</label><input id="grupo_faculdade"></div>
+        <div class="field"><label for="grupo_descricao">Descrição</label><textarea id="grupo_descricao" required></textarea></div>
+        <div class="field"><label for="grupo_tags">Tags (vírgula)</label><input id="grupo_tags" placeholder="ADS, Algoritmos"></div>
+        <div class="field"><label for="grupo_capa">URL da capa</label><input id="grupo_capa" placeholder="https://..."></div>
         <div class="hero-cta" style="margin-top:.6rem;justify-content:flex-end">
           <button class="btn" type="button" id="cancelDrawer">Cancelar</button>
-          <button class="cta" type="submit">Criar</button>
+          <button class="cta" type="submit" id="submitGrupo">Salvar</button>
         </div>
-        <p id="createStatusMobile" class="section-desc" style="margin:.5rem 0 0"></p>
+        <p id="formStatus" class="section-desc" style="margin:.5rem 0 0"></p>
       </form>
     </div>
 
-    <!-- Lista pública -->
     <section>
       <div class="container">
-        <div class="section-head">
-          <h2>Encontre um grupo</h2>
-        </div>
-        <div id="groupsGrid" class="grid grid-4" aria-live="polite"></div>
-        <nav id="pagination" class="pagination" aria-label="Paginação"
-          style="margin-top:1.25rem;display:flex;justify-content:center;gap:.5rem;flex-wrap:wrap"></nav>
+        <div class="section-head"><h2>Encontre um grupo</h2></div>
+        <div id="outrosGruposList" class="grid grid-4" aria-live="polite"></div>
+        <p id="outrosGruposEmpty" class="section-desc" style="display:none;margin-top:.5rem"></p>
       </div>
     </section>
   </main>
 
   <footer id="contato"></footer>
 
-  <!-- JS comum (popover + ano do rodapé) -->
-  <!-- Data helper: tenta API e cai para localStorage -->
   <script src="../../assets/js/layout.js" defer></script>
-  <script src="../../assets/js/grupos-data.js" defer></script>
-  <!-- JS específico da página -->
   <script src="../../assets/js/grupos.js" defer></script>
 </body>
-
 </html>
-
