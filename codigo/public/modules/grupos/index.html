@@ -64,7 +64,7 @@
     <div id="grupoDrawer" class="drawer" aria-hidden="true" aria-labelledby="drawerTitle">
       <div class="drawer-head">
         <h3 id="drawerTitle" style="margin:0">Criar grupo</h3>
-        <button class="close" type="button" aria-label="Fechar" id="closeDrawer">×</button>
+        <button class="close" type="button" aria-label="Fechar" id="closeDrawer">&times;</button>
       </div>
       <form id="grupoForm">
         <input type="hidden" id="grupo_id">
@@ -75,7 +75,7 @@
         <div class="field"><label for="grupo_capa">URL da capa</label><input id="grupo_capa" placeholder="https://..."></div>
         <div class="hero-cta" style="margin-top:.6rem;justify-content:flex-end">
           <button class="btn" type="button" id="cancelDrawer">Cancelar</button>
-          <button class="cta" type="submit" id="submitGrupo">Salvar</button>
+          <button class="cta" type="submit" id="submitGrupo">Salvar alterações</button>
         </div>
         <p id="formStatus" class="section-desc" style="margin:.5rem 0 0"></p>
       </form>
@@ -93,6 +93,7 @@
   <footer id="contato"></footer>
 
   <script src="../../assets/js/layout.js" defer></script>
+  <script src="../../assets/js/grupos-data.js" defer></script>
   <script src="../../assets/js/grupos.js" defer></script>
 </body>
 </html>

@@ -1,262 +1,317 @@
-// Grupos — lista/criar/editar/excluir com fallback localStorage + JSON local
-
+// Grupos - consumo apenas de GruposData (JSON local + localStorage)
 (function () {
-  const PER_PAGE   = 8;
-  const STORAGE_ALL = "grupos_db_v1";
-  const STORAGE_MY  = "meus_grupos_v1";
-  const STORAGE_OWN = "grupos_autoria_v1";
-  const JSON_PATH   = "/codigo/db/grupos.json";
+  const state = { grupos: [], filtro: "" };
+  let tempIdCounter = null;
 
-  let all   = [];
-  let page  = 1;
-  let q     = "";
-  const me        = new Set(JSON.parse(localStorage.getItem(STORAGE_MY)  || "[]"));
-  const createdBy = new Set(JSON.parse(localStorage.getItem(STORAGE_OWN) || "[]"));
+  const $ = (selector) => document.querySelector(selector);
+  const esc = (value = "") =>
+    String(value).replace(/[&<>\"']/g, (char) => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;"
+    })[char]);
 
-  const $   = (s) => document.querySelector(s);
-  const esc = (s = "") => String(s).replace(/[&<>\"']/g, (m) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;" }[m]));
-  const toTags = (s) => String(s || "").split(",").map(t => t.trim()).filter(Boolean);
-  const cover = (g) => esc(g.capa || `https://picsum.photos/640/360?seed=${g.id}`);
+  const drawer = $("#grupoDrawer");
+  const btnCriar = $("#btnCriarGrupo");
+  const btnFechar = $("#closeDrawer");
+  const btnCancelar = $("#cancelDrawer");
+  const form = $("#grupoForm");
+  const statusMsg = $("#formStatus");
 
-  function saveAll()   { localStorage.setItem(STORAGE_ALL, JSON.stringify(all)); }
-  function saveMe()    { localStorage.setItem(STORAGE_MY,  JSON.stringify([...me])); }
-  function saveOwners(){ localStorage.setItem(STORAGE_OWN, JSON.stringify([...createdBy])); }
-
-  function loadLocal() {
-    try {
-      const raw = localStorage.getItem(STORAGE_ALL);
-      return raw ? JSON.parse(raw) : null;
-    } catch (_) {
-      return null;
+  function nextTempId() {
+    if (tempIdCounter === null) {
+      const seed = parseInt(window.GruposData.generateId(), 10);
+      tempIdCounter = Number.isFinite(seed) ? seed : 1;
     }
+    return String(tempIdCounter++);
   }
 
-  async function carregarGrupos() {
-    try {
-      const r = await fetch(JSON_PATH, { cache: "no-store" });
-      if (!r.ok) throw new Error("Erro HTTP " + r.status);
-      all = await r.json();
-      saveAll();
-    } catch (e) {
-      console.error("Erro ao carregar grupos:", e);
-      all = loadLocal() || [];
-    }
-    renderMy();
-    renderPublic();
+  function toTags(value) {
+    if (!value) return [];
+    return value
+      .split(",")
+      .map((t) => t.trim())
+      .filter(Boolean);
   }
 
-  /* Templates */
-  function myCardHTML(g) {
-    return `
-      <article class="card group">
-        <div class="card-media" style="background-image:url('${cover(g)}')"></div>
-        <div class="group-body">
-          <h3>${esc(g.titulo || "")}</h3>
-          <p class="group-desc">${esc(g.descricao || "")}</p>
-          <div class="group-meta" style="display:flex;flex-direction:column;gap:.25rem">
-            <span>${Number(g.membros || 0)} membros</span>
-            <span>${Number(g.posts_semana || 0)} posts/semana</span>
-          </div>
-          <div class="group-tags">${(g.tags || []).map(t => `<span class="tag">${esc(t)}</span>`).join("")}</div>
-          <div class="group-actions">
-            <a class="btn" href="grupo.html?id=${encodeURIComponent(g.id)}">Ver grupo</a>
-            <button class="btn btn--ghost" data-leave="${esc(g.id)}">Sair</button>
-            ${ createdBy.has(String(g.id))
-                ? `<button class="btn btn--ghost" data-edit="${esc(g.id)}">Editar</button>
-                    <button class="btn btn--ghost" data-delete="${esc(g.id)}">Excluir</button>`
-                : "" }
-          </div>
-        </div>
-      </article>`;
-  }
+  function normalizeGroup(group) {
+    const id = group?.id != null ? String(group.id) : nextTempId();
+    const tags = Array.isArray(group?.tags)
+      ? group.tags
+      : typeof group?.tags === "string"
+        ? toTags(group.tags)
+        : [];
+    const participa = Boolean(group?.participa || group?.ehMeu || group?.meu || group?.isMine);
+    const criadoPorUsuario = Boolean(
+      group?.criadoPorUsuario || group?.ehMeu || group?.meu || group?.isMine
+    );
 
-  function pubCardHTML(g) {
-    const joined = me.has(String(g.id));
-    return `
-      <article class="card group">
-        <div class="card-media" style="background-image:url('${cover(g)}')"></div>
-        <div class="group-body">
-          <h3>${esc(g.titulo || "")}</h3>
-          <p class="group-desc">${esc(g.descricao || "")}</p>
-          <div class="group-meta" style="display:flex;flex-direction:column;gap:.25rem">
-            <span>${Number(g.membros || 0)} membros</span>
-            <span>${Number(g.posts_semana || 0)} posts/semana</span>
-          </div>
-          <div class="group-tags">${(g.tags || []).map(t => `<span class="tag">${esc(t)}</span>`).join("")}</div>
-          <div class="group-actions">
-            <a class="btn" href="grupo.html?id=${encodeURIComponent(g.id)}">Ver grupo</a>
-            ${ joined ? `<button class="btn" disabled data-joined>Participando</button>`
-                      : `<button class="cta" data-join="${esc(g.id)}">Participar</button>` }
-          </div>
-        </div>
-      </article>`;
-  }
-
-  /* Render */
-  function renderMy() {
-    const mine = all.filter(g => me.has(String(g.id)));
-    const grid = $("#myGrid");
-    if (grid) grid.innerHTML = mine.map(myCardHTML).join("");
-    const empty = $("#myEmpty");
-    if (empty) empty.style.display = mine.length ? "none" : "block";
-  }
-
-  function renderPublic() {
-    const filtered = q
-      ? all.filter(g =>
-          (g.titulo || "").toLowerCase().includes(q) ||
-          (g.descricao || "").toLowerCase().includes(q) ||
-          (g.tags || []).some(t => (t || "").toLowerCase().includes(q)))
-      : all;
-
-    const total = Math.max(1, Math.ceil(filtered.length / PER_PAGE));
-    if (page > total) page = total;
-    const slice = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE);
-
-    const grid = $("#groupsGrid");
-    if (grid) {
-      grid.innerHTML = slice.length
-        ? slice.map(pubCardHTML).join("")
-        : `<p class="section-desc">Nenhum grupo encontrado.</p>`;
-    }
-
-    const mk = (label, p, active = false, dis = false) => `
-      <a class="btn"
-         ${dis ? 'aria-disabled="true" tabindex="-1"' : `href="#p${p}" data-p="${p}"`}
-         ${active ? 'aria-current="page" style="font-weight:800;border-color:transparent;background:linear-gradient(135deg,var(--brand-2),var(--brand));color:#fff"' : ''}>
-         ${label}</a>`;
-    let html = mk("‹ Anterior", page - 1, false, page === 1);
-    for (let i = 1; i <= total; i++) html += mk(String(i), i, i === page);
-    html += mk("Próxima ›", page + 1, false, page === total);
-    const pag = $("#pagination");
-    if (pag) pag.innerHTML = html;
-  }
-
-  /* Drawer + Form (criar/editar) */
-  (function () {
-    const dr         = $("#drawer");
-    const openCreate = $("#openCreate");
-    const closeBtn   = $("#closeDrawer");
-    const cancelBtn  = $("#cancelDrawer");
-    const form       = $("#createFormMobile");
-
-    if (!dr || !openCreate) return;
-
-    const open  = () => { dr.classList.add("is-open");  dr.setAttribute("aria-hidden", "false"); };
-    const close = () => {
-      dr.classList.remove("is-open");
-      dr.setAttribute("aria-hidden", "true");
-      form?.reset();
-      if (form?.dataset) delete form.dataset.editingId;
+    return {
+      id,
+      titulo: group?.titulo || group?.name || "Sem título",
+      descricao: group?.descricao || group?.descricao_curta || "Sem descrição",
+      faculdade: group?.faculdade || group?.curso || "",
+      curso: group?.curso || group?.faculdade || "",
+      membros: Number(group?.membros ?? group?.participantes ?? 0) || 0,
+      posts_semana: Number(group?.posts_semana ?? group?.postsSemana ?? 0) || 0,
+      capa: group?.capa || group?.imagem || "",
+      tags,
+      participa,
+      criadoPorUsuario
     };
+  }
 
-    openCreate.addEventListener("click", open);
-    closeBtn  && closeBtn.addEventListener("click", close);
-    cancelBtn && cancelBtn.addEventListener("click", close);
-    dr.addEventListener("click", (e) => { if (e.target === dr) close(); });
-
-    form && form.addEventListener("submit", (e) => {
-      e.preventDefault();
-      const payload = {
-        titulo:     $("#mtitulo").value.trim(),
-        faculdade:  $("#mfaculdade").value.trim(),
-        curso:      $("#mcurso").value.trim(),
-        descricao:  $("#mdescricao").value.trim(),
-        tags:       toTags($("#mtags").value),
-        capa:       $("#mcapa").value.trim(),
-        membros: 1,
-        posts_semana: 0
-      };
-
-      const status = $("#createStatusMobile");
-      if (form.dataset.editingId) {
-        const id = form.dataset.editingId;
-        const idx = all.findIndex(g => String(g.id) === String(id));
-        if (idx !== -1) {
-          all[idx] = { ...all[idx], ...payload, id };
-          saveAll();
-          renderMy(); renderPublic();
-          if (status) status.textContent = "Grupo atualizado!";
-        }
-      } else {
-        const newId = "grp-" + Date.now() + Math.random().toString(36).slice(2, 6);
-        const g = { ...payload, id: newId };
-        all.unshift(g);
-        createdBy.add(String(newId)); saveOwners();
-        me.add(String(newId)); saveMe();
-        saveAll();
-        renderMy(); renderPublic();
-        if (status) status.textContent = "Grupo criado!";
-      }
-      setTimeout(close, 300);
+  function normalizeList(data) {
+    if (!Array.isArray(data)) return [];
+    const seen = new Set();
+    const list = [];
+    data.forEach((item) => {
+      const normalized = normalizeGroup(item || {});
+      if (seen.has(normalized.id)) return;
+      seen.add(normalized.id);
+      list.push(normalized);
     });
-  })();
+    return list;
+  }
 
-  /* Busca e paginação + ações dos cards */
-  document.addEventListener("input", (e) => {
-    if (e.target && e.target.id === "q") {
-      q = (e.target.value || "").toLowerCase();
-      page = 1;
-      renderPublic();
+  function salvarGrupos() {
+    window.GruposData.saveAll(state.grupos);
+  }
+
+  function getMeusGrupos() {
+    return state.grupos.filter((g) => g.participa);
+  }
+
+  function getOutrosGrupos() {
+    return state.grupos.filter((g) => !g.participa);
+  }
+
+  function aplicarFiltro(lista) {
+    if (!state.filtro) return lista;
+    const term = state.filtro.toLowerCase();
+    return lista.filter((g) => {
+      const textoBase = `${g.titulo || ""} ${g.descricao || ""} ${(g.tags || []).join(" ")}`.toLowerCase();
+      return textoBase.includes(term);
+    });
+  }
+
+  function cardHTML(grupo, isMeu) {
+    const capa = esc(grupo.capa || `https://picsum.photos/640/360?seed=${grupo.id}`);
+    const tags = grupo.tags && grupo.tags.length ? `<span>${grupo.tags.map(esc).join(", ")}</span>` : "";
+    const actions = isMeu
+      ? `<button class="btn btn--ghost" data-edit="${esc(grupo.id)}">Editar</button>
+         <button class="btn btn--ghost" data-delete="${esc(grupo.id)}">Excluir</button>`
+      : `<button class="cta" data-join="${esc(grupo.id)}">Participar</button>`;
+
+    return `
+      <article class="card group">
+        <div class="card-media" style="background-image:url('${capa}')"></div>
+        <div class="group-body">
+          <h3>${esc(grupo.titulo)}</h3>
+          <p class="group-desc">${esc(grupo.descricao)}</p>
+          <div class="group-meta" style="display:flex;flex-direction:column;gap:.25rem">
+            <span>${Number(grupo.membros || 0)} participantes</span>
+            <span>${esc(grupo.faculdade || "Faculdade não informada")}</span>
+            ${tags}
+          </div>
+          <div class="group-actions" style="display:flex;gap:.5rem;flex-wrap:wrap">
+            ${actions}
+          </div>
+        </div>
+      </article>
+    `;
+  }
+
+  function renderSecao(lista, containerId, emptyId, emptyMsg, isMeu) {
+    const container = document.getElementById(containerId);
+    const empty = document.getElementById(emptyId);
+    if (!container || !empty) return;
+
+    const dados = aplicarFiltro(lista);
+    if (!dados.length) {
+      container.innerHTML = "";
+      empty.textContent = emptyMsg;
+      empty.style.display = "block";
+      return;
     }
-  });
 
-  document.addEventListener("click", (e) => {
-    const joinBtn  = e.target.closest("[data-join]");
-    const leaveBtn = e.target.closest("[data-leave]");
-    const editBtn  = e.target.closest("[data-edit]");
-    const delBtn   = e.target.closest("[data-delete]");
-    const pag      = e.target.closest("[data-p]");
+    container.innerHTML = dados.map((g) => cardHTML(g, isMeu)).join("");
+    empty.style.display = "none";
+  }
+
+  function renderizar() {
+    renderSecao(
+      getMeusGrupos(),
+      "meusGruposList",
+      "meusGruposEmpty",
+      "Você ainda não participa de nenhum grupo.",
+      true
+    );
+    renderSecao(
+      getOutrosGrupos(),
+      "outrosGruposList",
+      "outrosGruposEmpty",
+      "Nenhum grupo encontrado. Ajuste a busca ou crie um novo grupo.",
+      false
+    );
+  }
+
+  function abrirDrawer(titulo) {
+    if (!drawer) return;
+    $("#drawerTitle").textContent = titulo;
+    drawer.classList.add("is-open");
+    drawer.setAttribute("aria-hidden", "false");
+  }
+
+  function fecharDrawer() {
+    if (!drawer) return;
+    drawer.classList.remove("is-open");
+    drawer.setAttribute("aria-hidden", "true");
+    form?.reset();
+    if (form?.dataset) delete form.dataset.editingId;
+    if (statusMsg) statusMsg.textContent = "";
+  }
+
+  function preencherFormulario(grupo) {
+    if (!form || !grupo) return;
+    form.dataset.editingId = grupo.id;
+    $("#grupo_nome").value = grupo.titulo || "";
+    $("#grupo_descricao").value = grupo.descricao || "";
+    $("#grupo_faculdade").value = grupo.faculdade || "";
+    $("#grupo_tags").value = (grupo.tags || []).join(", ");
+    $("#grupo_capa").value = grupo.capa || "";
+  }
+
+  function criarOuAtualizar(e) {
+    e.preventDefault();
+    if (!form) return;
+    const editId = form.dataset?.editingId;
+    const nome = $("#grupo_nome")?.value.trim() || "Sem título";
+    const descricao = $("#grupo_descricao")?.value.trim() || "Sem descrição";
+    const faculdade = $("#grupo_faculdade")?.value.trim() || "";
+    const tags = toTags($("#grupo_tags")?.value || "");
+    const capa = $("#grupo_capa")?.value.trim() || "";
+
+    if (editId) {
+      const idx = state.grupos.findIndex((g) => String(g.id) === String(editId));
+      if (idx !== -1) {
+        state.grupos[idx] = {
+          ...state.grupos[idx],
+          titulo: nome,
+          descricao,
+          faculdade,
+          curso: faculdade || state.grupos[idx].curso,
+          tags,
+          capa
+        };
+      }
+      if (statusMsg) statusMsg.textContent = "Alterações salvas.";
+    } else {
+      const novoGrupo = {
+        id: window.GruposData.generateId(),
+        titulo: nome,
+        descricao,
+        faculdade,
+        curso: faculdade,
+        tags,
+        capa,
+        membros: 1,
+        participa: true,
+        criadoPorUsuario: true
+      };
+      state.grupos.unshift(novoGrupo);
+      if (statusMsg) statusMsg.textContent = "Grupo criado!";
+    }
+
+    salvarGrupos();
+    renderizar();
+    setTimeout(fecharDrawer, 250);
+  }
+
+  function handleClick(e) {
+    const joinBtn = e.target.closest("[data-join]");
+    const editBtn = e.target.closest("[data-edit]");
+    const deleteBtn = e.target.closest("[data-delete]");
 
     if (joinBtn) {
       const id = String(joinBtn.dataset.join);
-      me.add(id); saveMe(); renderMy(); renderPublic(); e.preventDefault(); return;
+      const grupo = state.grupos.find((g) => String(g.id) === id);
+      if (grupo && !grupo.participa) {
+        grupo.participa = true;
+        grupo.membros = Math.max(Number(grupo.membros) || 0, 0) + 1;
+        salvarGrupos();
+        renderizar();
+      }
+      e.preventDefault();
+      return;
     }
-    if (leaveBtn) {
-      const id = String(leaveBtn.dataset.leave);
-      me.delete(id); saveMe(); renderMy(); renderPublic(); e.preventDefault(); return;
-    }
+
     if (editBtn) {
       const id = String(editBtn.dataset.edit);
-      if (!createdBy.has(id)) { alert("Apenas quem criou pode editar."); return; }
-      const g = all.find(x => String(x.id) === id); if (!g) return;
-      const dr = $("#drawer"); const fm = $("#createFormMobile"); if (!dr || !fm) return;
-      $("#drawerTitle").textContent = "Editar grupo";
-      $("#mtitulo").value    = g.titulo || "";
-      $("#mfaculdade").value = g.faculdade || "";
-      $("#mcurso").value     = g.curso || "";
-      $("#mdescricao").value = g.descricao || "";
-      $("#mtags").value      = (g.tags || []).join(", ");
-      $("#mcapa").value      = g.capa || "";
-      fm.dataset.editingId = id;
-      dr.classList.add("is-open"); dr.setAttribute("aria-hidden", "false");
-      e.preventDefault(); return;
+      const grupo = state.grupos.find((g) => String(g.id) === id);
+      if (!grupo) return;
+      if (!grupo.criadoPorUsuario) {
+        alert("Apenas grupos criados por você podem ser editados.");
+        return;
+      }
+      preencherFormulario(grupo);
+      abrirDrawer("Editar grupo");
+      e.preventDefault();
+      return;
     }
-    if (delBtn) {
-      const id = String(delBtn.dataset.delete);
-      if (!createdBy.has(id)) { alert("Apenas quem criou pode excluir."); return; }
+
+    if (deleteBtn) {
+      const id = String(deleteBtn.dataset.delete);
+      const grupo = state.grupos.find((g) => String(g.id) === id);
+      if (!grupo) return;
+      if (!grupo.criadoPorUsuario) {
+        alert("Apenas grupos criados por você podem ser excluídos.");
+        return;
+      }
       if (!confirm("Excluir este grupo?")) return;
-      all = all.filter(g => String(g.id) !== id);
-      createdBy.delete(id); saveOwners();
-      me.delete(id); saveMe();
-      saveAll();
-      renderMy(); renderPublic(); e.preventDefault(); return;
+      state.grupos = state.grupos.filter((g) => String(g.id) !== id);
+      salvarGrupos();
+      renderizar();
+      e.preventDefault();
     }
-    if (pag) {
-      const p = Number(pag.dataset.p);
-      if (!isNaN(p)) { page = p; renderPublic(); e.preventDefault(); return; }
+  }
+
+  function handleFiltro(e) {
+    if (e.target && e.target.id === "searchGrupos") {
+      state.filtro = (e.target.value || "").trim().toLowerCase();
+      renderizar();
     }
+  }
+
+  btnCriar?.addEventListener("click", () => {
+    form?.reset();
+    if (form?.dataset) delete form.dataset.editingId;
+    abrirDrawer("Criar grupo");
+    $("#grupo_nome")?.focus();
   });
+  btnFechar?.addEventListener("click", fecharDrawer);
+  btnCancelar?.addEventListener("click", fecharDrawer);
+  drawer?.addEventListener("click", (event) => {
+    if (event.target === drawer) fecharDrawer();
+  });
+  form?.addEventListener("submit", criarOuAtualizar);
+  document.addEventListener("click", handleClick);
+  document.addEventListener("input", handleFiltro);
 
-  /* INIT */
   (async function init() {
-    await carregarGrupos();
+    try {
+      const carregados = await window.GruposData.getAll();
+      state.grupos = normalizeList(carregados);
+    } catch (error) {
+      console.warn("Não foi possível carregar grupos do JSON, usando localStorage.", error);
+      state.grupos = normalizeList(window.GruposData.getFromStorage());
+    }
+    if (!state.grupos.length) {
+      state.grupos = normalizeList(window.GruposData.getFromStorage());
+    }
+    salvarGrupos();
+    renderizar();
   })();
-
-  // API util para debug no console
-  window.GruposAPI = {
-    carregarGrupos,
-    renderMy,
-    renderPublic
-  };
-})(); 
+})();
