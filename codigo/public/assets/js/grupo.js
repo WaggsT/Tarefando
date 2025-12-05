@@ -1,5 +1,5 @@
 ﻿// -------------------------------------------------------------------
-// Grupo â€“ pÃ¡gina de DETALHE (capa, descriÃ§Ã£o, aÃ§Ãµes, relacionados)
+// Grupo – página de DETALHE (capa, descrição, ações, relacionados)
 // -------------------------------------------------------------------
 
 /* =================== CONFIG & ESTADO =================== */
@@ -24,16 +24,16 @@ async function getAll() {
 /* =================== RENDER =================== */
 function renderGroup(g){
   if(!g){
-    $("#title").textContent = "Grupo nÃ£o encontrado";
+    $("#title").textContent = "Grupo não encontrado";
     $("#desc").textContent  = "Verifique o link ou volte para Grupos.";
     $("#actions").innerHTML = "";
     $("#asideActions").innerHTML = "";
     return;
   }
 
-  $("#title").textContent = g.titulo || "Sem tÃ­tulo";
+  $("#title").textContent = g.titulo || "Sem título";
   $("#cover").style.backgroundImage = `url('${coverOf(g)}')`;
-  $("#desc").textContent = g.descricao || "â€”";
+  $("#desc").textContent = g.descricao || "—";
 
   // meta
   $("#meta").innerHTML = `
@@ -52,7 +52,7 @@ function renderGroup(g){
   // tags
   $("#tags").innerHTML = (g.tags||[]).map(t=>`<span class="tag">${esc(t)}</span>`).join("");
 
-  // aÃ§Ãµes (topo + aside)
+  // ações (topo + aside)
   const joined  = me.has(String(g.id));
   const joinBtn = joined ? `<button class="btn" disabled>Participando</button>`
                          : `<button class="cta" id="joinTop">Participar</button>`;
@@ -70,13 +70,13 @@ function renderGroup(g){
   });
 
   // breadcrumb
-  $("#crumb").innerHTML = `<a href="/codigo/public/modules/grupos/index.html">â† Voltar para Grupos</a>` +
-    (g.curso || g.faculdade ? ` Â· <span class="section-desc">${esc(g.curso||g.faculdade)}</span>` : "");
+  $("#crumb").innerHTML = `<a href="/codigo/public/modules/grupos/index.html">← Voltar para Grupos</a>` +
+    (g.curso || g.faculdade ? ` · <span class="section-desc">${esc(g.curso||g.faculdade)}</span>` : "");
 }
 
 function renderRelated(all, g){
   const box = $("#related");
-  if(!g){ box.innerHTML = `<p class="section-desc">â€”</p>`; return; }
+  if(!g){ box.innerHTML = `<p class="section-desc">—</p>`; return; }
 
   let rel = all.filter(x =>
     x.id !== g.id &&

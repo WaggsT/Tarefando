@@ -30,7 +30,7 @@
 
   const headerTemplate = (user) => `
     <div class="container nav" style="display:flex;align-items:center;justify-content:space-between;gap:1rem;">
-      <a id="brandLink" href="${BASE}index.html#home" class="brand" aria-label="P?gina inicial Tarefando">
+      <a id="brandLink" href="${BASE}index.html#home" class="brand" aria-label="Página inicial Tarefando">
         <span class="brand-text">Tarefando</span>
       </a>
       <nav id="mainMenu" class="menu" aria-label="menu principal" style="flex:1;justify-content:center;">
@@ -69,12 +69,12 @@
         <p class="section-desc">Cadernos e estudos compartilhados.</p>
       </div>
       <div>
-        <p><a href="${BASE}assinaturas.html">Pre?os e planos</a></p>
-        <p><a href="#">Termos</a> ? <a href="#">Privacidade</a></p>
+        <p><a href="${BASE}assinaturas.html">Preços e planos</a></p>
+        <p><a href="#">Termos</a> · <a href="#">Privacidade</a></p>
       </div>
       <div>
         <p>Contato: <a href="mailto:contato@tarefando.app">contato@tarefando.app</a></p>
-        <p>? <span id="y"></span> Tarefando</p>
+        <p>© <span id="y"></span> Tarefando</p>
       </div>
     </div>`;
 
