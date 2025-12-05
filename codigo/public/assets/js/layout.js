@@ -150,6 +150,13 @@
     if (logoutBtn) logoutBtn.addEventListener("click", logout);
   }
 
+  function hideHomeCtasIfLogged(user) {
+    if (!user) return;
+    document.getElementById("btnCadastrar")?.remove();
+    document.getElementById("btnEntrar")?.remove();
+    document.querySelector(".cta-home")?.classList.add("hidden");
+  }
+
   function applyLayout() {
     const user = getCurrentUser();
     const header = document.querySelector("header");
@@ -160,6 +167,7 @@
     wireAccountPopover();
     wireMenuToggle();
     wireAccountActions(user);
+    hideHomeCtasIfLogged(user);
     updateFooterYear();
   }
 
