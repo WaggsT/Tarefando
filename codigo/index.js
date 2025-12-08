@@ -21,8 +21,10 @@
   const menu = document.getElementById('accountMenu');
   if (!btn || !menu) return; // se a página não tem o menu de conta, sai
 
+
   const wrap = btn.parentElement;
 
+  
   const close = () => {
     wrap.classList.remove('is-open');
     btn.setAttribute('aria-expanded', 'false');
